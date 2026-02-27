@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ru">
+  <%- include('../partials/head') %>
+  <body class="admin-body">
+    <% 
+      const mediaItems = media || [];
+      const mediaTypes = Array.from(new Set(mediaItems.map((item) => item.type).filter(Boolean))).sort();
+      const serviceCount = (site?.services || []).length;
+      const faqCount = (site?.faq || []).length;
+      const imageCount = mediaItems.filter((item) => item.type === 'image').length;
+      const videoCount = mediaItems.filter((item) => item.type === 'video').length;
+      const sectionLabels = {
+        services: 'Услуги',
+        process: 'Процесс',
+        materials: 'Материалы',
+        about: 'О лаборатории',
+        gallery: 'Медиатека',
+        contacts: 'Контакты'
+      };
+      const sectionsOrder = site?.sections?.order || ['services', 'process', 'materials', 'about', 'gallery', 'contacts'];
+      const sectionPositions = sectionsOrder.reduce((acc, key, index) => {
+        acc[key] = index + 1;
+        return acc;
+      }, {});
+    %>
+    <header class="admin-topbar">
+      <div>
+        <h1>Панель управления White Lab</h1>
+        <p>Редактирование контента, SEO и медиа</p>
+      </div>
+      <div class="admin-top-actions">
+        <a href="/" target="_blank" rel="noopener noreferrer">Открыть сайт</a>
+        <form method="post" action="/admin/logout">
+          <button type="submit">Выйти</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <% if (success) { %>
+        <p class="admin-alert admin-alert-success"><%= success %></p>
+      <% } %>
+      <% if (error) { %>
+        <p class="admin-alert admin-alert-error"><%= decodeURIComponent(error) %></p>
+      <% } %>
+
+      <section class="admin-card admin-seo-audit" id="admin-seo-audit" data-seo-audit>
+        <h2>SEO-аудит</h2>
+        <p class="admin-section-note">Проверка обязательных полей. Нажмите на пункт, чтобы перейти к проблемному месту и исправить.</p>
+        <ul class="admin-audit-list" data-seo-audit-list>
+          <li class="admin-audit-empty">Проверяем контент...</li>
+        </ul>
+      </section>
+
+      <section class="admin-kpi-grid">
+        <article class="admin-kpi-card">
+          <small>Услуги</small>
+          <strong><%= serviceCount %></strong>
+        </article>
+        <article class="admin-kpi-card">
+          <small>ЧаВо</small>
+          <strong><%= faqCount %></strong>
+        </article>
+        <article class="admin-kpi-card">
+          <small>Фото</small>
+          <strong><%= imageCount %></strong>
+        </article>
+        <article class="admin-kpi-card">
+          <small>Видео</small>
+          <strong><%= videoCount %></strong>
+        </article>
+      </section>
+
+      <section class="admin-card">
+        <h2>Контент и SEO</h2>
+        <nav class="admin-anchor-nav">
+          <a href="#admin-seo-audit">SEO-аудит</a>
+          <a href="#admin-seo">SEO</a>
+          <a href="#admin-sections">Секции</a>
+          <a href="#admin-brand">Бренд</a>
+          <a href="#admin-hero">Главный экран</a>
+          <a href="#admin-about">О лаборатории</a>
+          <a href="#admin-services-pages">Страницы услуг</a>
+          <a href="#admin-faq">ЧаВо</a>
+          <a href="#admin-metrics">Метрики</a>
+          <a href="#admin-media">Медиатека</a>
+        </nav>
+
+        <form method="post" action="/admin/content" class="admin-form-grid" data-admin-content-form>
+          <h3 id="admin-seo">SEO</h3>
+          <p class="admin-section-note">
+            Контролируйте выдачу в поиске: держите `Заголовок` в пределах 55-65 символов, `Описание` в пределах 130-160.
+          </p>
+          <label>
+            Заголовок
+            <input name="seo_title" value="<%= site?.seo?.title || '' %>" required data-seo-title />
+            <span class="admin-counter" data-seo-title-count>0</span>
+          </label>
+          <label>
+            Описание
+            <textarea name="seo_description" rows="3" required data-seo-description><%= site?.seo?.description || '' %></textarea>
+            <span class="admin-counter" data-seo-description-count>0</span>
+          </label>
+          <label>
+            Ключевые слова
+            <input name="seo_keywords" value="<%= site?.seo?.keywords || '' %>" />
+          </label>
+          <label>
+            OG-заголовок
+            <input name="seo_og_title" value="<%= site?.seo?.ogTitle || '' %>" data-seo-og-title />
+          </label>
+          <label>
+            OG-описание
+            <textarea name="seo_og_description" rows="2" data-seo-og-description><%= site?.seo?.ogDescription || '' %></textarea>
+          </label>
+          <aside class="admin-seo-preview">
+            <small>Превью сниппета</small>
+            <strong data-seo-preview-title><%= site?.seo?.title || '' %></strong>
+            <span data-seo-preview-url><%= site?.sourceLinks?.[0] || '/' %></span>
+            <p data-seo-preview-description><%= site?.seo?.description || '' %></p>
+          </aside>
+
+          <h3 id="admin-sections">Секции главной и позиции</h3>
+          <p class="admin-section-note">Позиция 1 будет идти сразу после hero. Порядок секций можно менять без правки шаблона.</p>
+          <% for (const key of Object.keys(sectionLabels)) { %>
+            <label>
+              Позиция: <%= sectionLabels[key] %>
+              <input type="number" min="1" max="10" name="section_order_<%= key %>" value="<%= sectionPositions[key] || '' %>" />
+            </label>
+          <% } %>
+          <label>
+            Заголовок секции «Услуги»
+            <input name="section_services_title" value="<%= site?.sections?.services?.title || '' %>" />
+          </label>
+          <label>
+            Описание секции «Услуги»
+            <textarea name="section_services_description" rows="3"><%= site?.sections?.services?.description || '' %></textarea>
+          </label>
+          <label>
+            Заголовок секции «Процесс»
+            <input name="section_process_title" value="<%= site?.sections?.process?.title || '' %>" />
+          </label>
+          <label>
+            Описание секции «Процесс»
+            <textarea name="section_process_description" rows="3"><%= site?.sections?.process?.description || '' %></textarea>
+          </label>
+          <label class="admin-help-full">
+            Этапы процесса (каждый пункт с новой строки)
+            <textarea name="section_process_steps" rows="5"><%= sectionProcessStepsText %></textarea>
+          </label>
+          <label>
+            Заголовок секции «Материалы»
+            <input name="section_materials_title" value="<%= site?.sections?.materials?.title || '' %>" />
+          </label>
+          <label>
+            Описание секции «Материалы»
+            <textarea name="section_materials_description" rows="3"><%= site?.sections?.materials?.description || '' %></textarea>
+          </label>
+          <label>
+            Заголовок секции «Медиатека»
+            <input name="section_gallery_title" value="<%= site?.sections?.gallery?.title || '' %>" />
+          </label>
+          <label>
+            Описание секции «Медиатека»
+            <textarea name="section_gallery_description" rows="3"><%= site?.sections?.gallery?.description || '' %></textarea>
+          </label>
+          <label>
+            Заголовок секции «Контакты»
+            <input name="section_contacts_title" value="<%= site?.sections?.contacts?.title || '' %>" />
+          </label>
+
+          <h3 id="admin-brand">Бренд и контакты</h3>
+          <label>
+            Название
+            <input name="brand_name" value="<%= site?.brand?.name || '' %>" required />
+          </label>
+          <label>
+            Полное название
+            <input name="brand_legal_name" value="<%= site?.brand?.legalName || '' %>" />
+          </label>
+          <label>
+            Категория
+            <input name="brand_category" value="<%= site?.brand?.category || '' %>" />
+          </label>
+          <label>
+            Город
+            <input name="brand_city" value="<%= site?.brand?.city || '' %>" />
+          </label>
+          <label>
+            Адрес
+            <input name="brand_address" value="<%= site?.brand?.address || '' %>" />
+          </label>
+          <label>
+            Индекс
+            <input name="brand_postal_code" value="<%= site?.brand?.postalCode || '' %>" />
+          </label>
+          <label>
+            Регион
+            <input name="brand_region" value="<%= site?.brand?.region || '' %>" />
+          </label>
+          <label>
+            Страна
+            <input name="brand_country" value="<%= site?.brand?.country || '' %>" />
+          </label>
+          <label>
+            Телефон (отображение)
+            <input name="brand_phone_display" value="<%= site?.brand?.phoneDisplay || '' %>" />
+          </label>
+          <label>
+            Телефон (значение)
+            <input name="brand_phone_value" value="<%= site?.brand?.phoneValue || '' %>" />
+          </label>
+          <label>
+            Электронная почта
+            <input name="brand_email" value="<%= site?.brand?.email || '' %>" />
+          </label>
+          <label>
+            График
+            <input name="brand_work_hours" value="<%= site?.brand?.workHours || '' %>" />
+          </label>
+          <label>
+            График ISO
+            <input name="brand_work_hours_iso" value="<%= site?.brand?.workHoursIso || '' %>" />
+          </label>
+          <label>
+            Широта
+            <input name="brand_lat" value="<%= site?.brand?.coordinates?.lat || '' %>" />
+          </label>
+          <label>
+            Долгота
+            <input name="brand_lng" value="<%= site?.brand?.coordinates?.lng || '' %>" />
+          </label>
+          <label>
+            Инстаграм
+            <input name="brand_instagram" value="<%= site?.brand?.instagram || '' %>" />
+          </label>
+          <label>
+            Ссылка на заказ
+            <input name="brand_order_link" value="<%= site?.brand?.orderLink || '' %>" />
+          </label>
+          <label>
+            Ссылка 2GIS
+            <input name="brand_map_2gis" value="<%= site?.brand?.map2gis || '' %>" />
+          </label>
+          <label>
+            Ссылка Яндекс Карты
+            <input name="brand_map_yandex" value="<%= site?.brand?.mapYandex || '' %>" />
+          </label>
+
+          <h3 id="admin-hero">Главный экран</h3>
+          <label>
+            Плашка
+            <input name="hero_badge" value="<%= site?.hero?.badge || '' %>" />
+          </label>
+          <label>
+            Заголовок
+            <input name="hero_title" value="<%= site?.hero?.title || '' %>" />
+          </label>
+          <label>
+            Подзаголовок
+            <textarea name="hero_subtitle" rows="3"><%= site?.hero?.subtitle || '' %></textarea>
+          </label>
+          <label>
+            Кнопка 1 текст
+            <input name="hero_primary_text" value="<%= site?.hero?.primaryCta?.text || '' %>" />
+          </label>
+          <label>
+            Кнопка 1 URL
+            <input name="hero_primary_url" value="<%= site?.hero?.primaryCta?.url || '' %>" />
+          </label>
+          <label>
+            Кнопка 2 текст
+            <input name="hero_secondary_text" value="<%= site?.hero?.secondaryCta?.text || '' %>" />
+          </label>
+          <label>
+            Кнопка 2 URL
+            <input name="hero_secondary_url" value="<%= site?.hero?.secondaryCta?.url || '' %>" />
+          </label>
+
+          <h3 id="admin-about">О лаборатории</h3>
+          <label>
+            Заголовок блока
+            <input name="about_title" value="<%= site?.about?.title || '' %>" />
+          </label>
+          <label>
+            Описание
+            <textarea name="about_text" rows="5"><%= site?.about?.text || '' %></textarea>
+          </label>
+          <label>
+            Факты (каждый с новой строки)
+            <textarea name="about_facts" rows="5"><%= factsText %></textarea>
+          </label>
+
+          <h3>Преимущества</h3>
+          <label>
+            Преимущества (каждый пункт с новой строки)
+            <textarea name="advantages" rows="5"><%= advantagesText %></textarea>
+          </label>
+
+          <h3 id="admin-faq">ЧаВо</h3>
+          <label>
+            ЧаВо (JSON)
+            <textarea name="faq_json" rows="10" data-faq-json><%= serializedFaq %></textarea>
+          </label>
+          <details class="admin-help admin-help-full">
+            <summary>Показать пример формата JSON</summary>
+            <pre>[
+  { "q": "Вопрос?", "a": "Ответ." }
+]</pre>
+          </details>
+          <label>
+            Ссылки-источники (каждая с новой строки)
+            <textarea name="source_links" rows="4"><%= sourceLinksText %></textarea>
+          </label>
+
+          <h3 id="admin-metrics">Метрики</h3>
+          <label>
+            Подписчики в Инстаграме
+            <input name="metric_instagram_followers" value="<%= site?.metrics?.instagramFollowers || 0 %>" />
+          </label>
+          <label>
+            Публикации в Инстаграме
+            <input name="metric_instagram_posts" value="<%= site?.metrics?.instagramPosts || 0 %>" />
+          </label>
+          <label>
+            Актуальное в Инстаграме
+            <input name="metric_instagram_highlights" value="<%= site?.metrics?.instagramHighlights || 0 %>" />
+          </label>
+          <label>
+            Рейтинг 2GIS
+            <input name="metric_2gis_rating" value="<%= site?.metrics?.twoGisRating || 0 %>" />
+          </label>
+          <label>
+            Отзывы 2GIS
+            <input name="metric_2gis_reviews" value="<%= site?.metrics?.twoGisReviews || 0 %>" />
+          </label>
+
+          <div class="admin-form-actions">
+            <button type="submit">Сохранить контент</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-card" id="admin-services-pages">
+        <h2>Страницы услуг</h2>
+        <p class="admin-section-note">Редактирование контента страниц услуг и встроенных медиафайлов (по ID из медиатеки).</p>
+        <form method="post" action="/admin/services" class="admin-services-editor" data-admin-services-form>
+          <% for (const [index, item] of (site?.services || []).entries()) { %>
+            <details class="admin-service-item" <%= index === 0 ? 'open' : '' %>>
+              <summary>
+                <strong><%= item.title %></strong>
+                <span>/services/<%= item.slug %></span>
+              </summary>
+              <div class="admin-service-fields">
+                <label>
+                  Slug
+                  <input name="service_slug" value="<%= item.slug %>" required />
+                </label>
+                <label>
+                  Заголовок
+                  <input name="service_title" value="<%= item.title %>" required />
+                </label>
+                <label>
+                  Короткое описание
+                  <input name="service_short" value="<%= item.short || '' %>" />
+                </label>
+                <label class="admin-help-full">
+                  Полное описание
+                  <textarea name="service_description" rows="4"><%= item.description || '' %></textarea>
+                </label>
+                <label>
+                  Материалы (каждый с новой строки)
+                  <textarea name="service_materials" rows="4"><%= (item.materials || []).join('\n') %></textarea>
+                </label>
+                <label>
+                  Медиа ID для этой страницы (каждый с новой строки)
+                  <textarea name="service_media_ids" rows="4"><%= (item.mediaIds || []).join('\n') %></textarea>
+                </label>
+              </div>
+            </details>
+          <% } %>
+          <details class="admin-help admin-help-full">
+            <summary>Справочник ID медиа для вставки</summary>
+            <div class="admin-media-id-list">
+              <% for (const mediaItem of mediaItems) { %>
+                <code><%= mediaItem.id %></code> — <span><%= mediaItem.title || mediaItem.alt || 'Без названия' %></span><br />
+              <% } %>
+            </div>
+          </details>
+          <div class="admin-form-actions">
+            <button type="submit">Сохранить страницы услуг</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-card">
+        <h2 id="admin-media">Медиатека</h2>
+        <div class="admin-media-actions">
+          <form method="post" action="/admin/media/import" class="admin-inline-form">
+            <h3>Импорт по URL</h3>
+            <input name="import_url" placeholder="https://..." required />
+            <input name="import_title" placeholder="Название" />
+            <button type="submit">Импортировать</button>
+          </form>
+
+          <form method="post" action="/admin/media/upload" enctype="multipart/form-data" class="admin-inline-form">
+            <h3>Загрузка файла</h3>
+            <input type="file" name="media_file" required />
+            <input name="upload_title" placeholder="Название" />
+            <button type="submit">Загрузить</button>
+          </form>
+        </div>
+
+        <div class="admin-media-toolbar">
+          <input type="search" placeholder="Поиск по названию или alt-тексту..." data-media-search />
+          <select data-media-type>
+            <option value="all">Все типы</option>
+            <% for (const type of mediaTypes) { %>
+              <option value="<%= type %>"><%= type %></option>
+            <% } %>
+          </select>
+          <span class="admin-media-count" data-media-count>Показано: <%= mediaItems.length %> / <%= mediaItems.length %></span>
+        </div>
+
+        <div class="admin-media-grid">
+          <% for (const item of mediaItems) { %>
+            <article
+              class="admin-media-card"
+              data-media-card
+              data-type="<%= item.type || '' %>"
+              data-title="<%= `${item.title || ''} ${item.alt || ''}`.toLowerCase() %>"
+            >
+              <% if (item.type === 'video') { %>
+                <video controls preload="metadata">
+                  <source src="<%= item.localOptimized %>" type="video/mp4" />
+                </video>
+              <% } else { %>
+                <img src="<%= item.localOptimized %>" alt="<%= item.alt || item.title %>" loading="lazy" />
+              <% } %>
+              <div class="admin-media-meta">
+                <strong><%= item.title %></strong>
+                <span>ID: <%= item.id %></span>
+                <span>Тип: <%= item.type %></span>
+              </div>
+              <form method="post" action="/admin/media/delete">
+                <input type="hidden" name="media_id" value="<%= item.id %>" />
+                <button type="submit" class="danger">Удалить</button>
+              </form>
+            </article>
+          <% } %>
+        </div>
+      </section>
+    </main>
+    <script src="/scripts/admin.js"></script>
+  </body>
+</html>

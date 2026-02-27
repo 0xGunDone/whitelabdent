@@ -1,0 +1,123 @@
+<%
+  // Hero component props
+  const {
+    badge = 'Цифровая зуботехническая лаборатория',
+    overline = 'Цифровая зуботехническая инженерия',
+    title = { outline: 'WHITE', solid: 'LAB' },
+    subtitle = '',
+    description = 'Точность инженерии, скорость производства и полный контроль результата на каждом этапе клинического кейса.',
+    primaryCTA = { text: 'Запустить кейс', href: '#' },
+    secondaryCTA = { text: 'Инстаграм', href: '#' },
+    media = { type: 'image', src: '', poster: '', alt: '' },
+    metrics = [],
+    signals = [],
+    console = [],
+    floatingCards = [],
+    runline = 'WHITE LAB · ЦИФРОВАЯ ЗУБОТЕХНИЧЕСКАЯ ЛАБОРАТОРИЯ · CAD/CAM ПРОТОКОЛ · E.MAX · ZrO2 · ТИТАН · PMMA · TRINIA · WHITE LAB ·',
+    trustStrip = [
+      '01 / ЦИФРОВОЙ ПРОТОКОЛ',
+      '02 / ПРЕМИАЛЬНЫЕ МАТЕРИАЛЫ',
+      '03 / КОНТРОЛЬ СРОКОВ',
+      '04 / КЛИНИЧЕСКАЯ ТОЧНОСТЬ'
+    ]
+  } = locals.heroProps || {};
+%>
+
+<section class="hero hero-liquid" id="top">
+  <div class="container">
+    <div class="hero-liquid-shell" data-hero-glow data-hero-phase="0">
+      <div class="hero-liquid-media-rail">
+        <div class="hero-liquid-media">
+          <% if (media.type === 'video') { %>
+            <video autoplay muted loop playsinline preload="metadata" poster="<%= media.poster || '' %>">
+              <source src="<%= media.src %>" type="video/mp4" />
+            </video>
+          <% } else if (media.type === 'image') { %>
+            <img src="<%= media.src %>" alt="<%= media.alt %>" loading="eager" />
+          <% } else { %>
+            <div class="hero-fallback">White Lab</div>
+          <% } %>
+          <div class="hero-liquid-vignette" aria-hidden="true"></div>
+          <div class="hero-liquid-gridline" aria-hidden="true"></div>
+          <div class="hero-scanline" aria-hidden="true"></div>
+          <span class="hero-liquid-orb hero-liquid-orb-a" aria-hidden="true"></span>
+          <span class="hero-liquid-orb hero-liquid-orb-b" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="hero-liquid-track">
+        <article class="hero-liquid-window hero-glass-card">
+          <div class="hero-liquid-window-head">
+            <p class="hero-kicker"><%= badge %></p>
+            <p class="hero-overline"><%= overline %></p>
+            <h1>
+              <span class="hero-word hero-word-outline"><%= title.outline %></span>
+              <span class="hero-word hero-word-solid"><%= title.solid %></span>
+            </h1>
+            <p class="hero-subtitle"><%= subtitle %></p>
+            <p class="hero-proof"><%= description %></p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="<%= primaryCTA.href %>"><%= primaryCTA.text %></a>
+              <a class="btn btn-secondary" href="<%= secondaryCTA.href %>" target="_blank" rel="noopener noreferrer"><%= secondaryCTA.text %></a>
+            </div>
+            <% if (signals && signals.length > 0) { %>
+              <div class="hero-signals">
+                <% for (const signal of signals) { %>
+                  <span><%= signal %></span>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+
+          <div class="hero-liquid-window-grid">
+            <% if (metrics && metrics.length > 0) { %>
+              <div class="hero-metrics" data-animate-metrics>
+                <% for (const metric of metrics) { %>
+                  <div class="hero-metric" data-metric>
+                    <div class="hero-metric-value" data-metric-value="<%= metric.value %>">0<%= metric.suffix || '' %></div>
+                    <div class="hero-metric-label"><%= metric.label %></div>
+                  </div>
+                <% } %>
+              </div>
+            <% } %>
+
+            <% if (console && console.length > 0) { %>
+              <div class="hero-console">
+                <% for (const item of console) { %>
+                  <article>
+                    <small><%= item.label %></small>
+                    <strong><%= item.value %></strong>
+                  </article>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+
+          <% if (floatingCards && floatingCards.length > 0) { %>
+            <div class="hero-liquid-mini-grid">
+              <% for (const card of floatingCards) { %>
+                <article class="hero-mini-card">
+                  <small><%= card.title %></small>
+                  <strong><%= card.subtitle %></strong>
+                  <p><%= card.description %></p>
+                </article>
+              <% } %>
+            </div>
+          <% } %>
+
+          <% if (trustStrip && trustStrip.length > 0) { %>
+            <div class="hero-trust-strip">
+              <% for (const item of trustStrip) { %>
+                <span><%= item %></span>
+              <% } %>
+            </div>
+          <% } %>
+        </article>
+
+        <div class="hero-liquid-runline" aria-hidden="true">
+          <span><%= runline %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

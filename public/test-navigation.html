@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Test - White Lab</title>
+  <link rel="stylesheet" href="/styles/site.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 200vh; /* Make page scrollable for testing */
+      background: var(--color-bg-primary, #05070b);
+    }
+    
+    .test-section {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-primary, #edf3f8);
+      font-family: var(--font-primary, sans-serif);
+      font-size: 2rem;
+    }
+    
+    #services { background: rgba(55, 208, 190, 0.1); }
+    #process { background: rgba(116, 229, 255, 0.1); }
+    #materials { background: rgba(255, 110, 110, 0.1); }
+    #about { background: rgba(55, 208, 190, 0.15); }
+    #gallery { background: rgba(116, 229, 255, 0.15); }
+    #contacts { background: rgba(255, 110, 110, 0.15); }
+  </style>
+</head>
+<body>
+  <div class="bg-noise" aria-hidden="true"></div>
+  
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="/" aria-label="White Lab">
+        <span class="brand-mark">WL</span>
+        <span class="brand-text">
+          <strong>White Lab</strong>
+          <small>Dental Lab</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" id="navigation" aria-label="Разделы сайта" aria-hidden="true">
+        <a href="#services">Услуги</a>
+        <a href="#process">Процесс</a>
+        <a href="#materials">Материалы</a>
+        <a href="#about">О лаборатории</a>
+        <a href="#gallery">Медиа</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+
+      <a class="call-btn" href="tel:+79999999999">Запустить кейс</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="services" class="test-section">
+      <h2>Услуги</h2>
+    </section>
+    
+    <section id="process" class="test-section">
+      <h2>Процесс</h2>
+    </section>
+    
+    <section id="materials" class="test-section">
+      <h2>Материалы</h2>
+    </section>
+    
+    <section id="about" class="test-section">
+      <h2>О лаборатории</h2>
+    </section>
+    
+    <section id="gallery" class="test-section">
+      <h2>Медиа</h2>
+    </section>
+    
+    <section id="contacts" class="test-section">
+      <h2>Контакты</h2>
+    </section>
+  </main>
+
+  <script src="/scripts/components/navigation.js"></script>
+  
+  <script>
+    // Test script to verify navigation functionality
+    console.log('Navigation Test Page Loaded');
+    
+    // Check if header exists
+    const header = document.querySelector('.site-header');
+    console.log('Header found:', !!header);
+    
+    // Check if mobile menu toggle was created
+    setTimeout(() => {
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      console.log('Mobile menu toggle created:', !!toggle);
+      
+      // Check if scroll tracking works
+      window.scrollTo(0, 100);
+      setTimeout(() => {
+        console.log('Header has is-scrolled class:', header.classList.contains('is-scrolled'));
+      }, 100);
+    }, 500);
+  </script>
+</body>
+</html>

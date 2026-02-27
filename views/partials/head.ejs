@@ -1,0 +1,47 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a111a" />
+  <meta name="msapplication-TileColor" content="#0a111a" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+  <title><%= meta?.title || "White Lab" %></title>
+  <meta name="description" content="<%= meta?.description || '' %>" />
+  <% if (meta?.keywords) { %>
+    <meta name="keywords" content="<%= meta.keywords %>" />
+  <% } %>
+  <% if (meta?.noindex) { %>
+    <meta name="robots" content="noindex,nofollow" />
+  <% } else { %>
+    <meta name="robots" content="index,follow" />
+  <% } %>
+  <% if (meta?.canonical) { %>
+    <link rel="canonical" href="<%= meta.canonical %>" />
+  <% } %>
+  <meta property="og:type" content="<%= meta?.type || 'website' %>" />
+  <meta property="og:title" content="<%= meta?.ogTitle || meta?.title || '' %>" />
+  <meta property="og:description" content="<%= meta?.ogDescription || meta?.description || '' %>" />
+  <% if (meta?.canonical) { %>
+    <meta property="og:url" content="<%= meta.canonical %>" />
+  <% } %>
+  <% if (meta?.image) { %>
+    <meta property="og:image" content="<%= meta.image %>" />
+  <% } %>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<%= meta?.ogTitle || meta?.title || '' %>" />
+  <meta name="twitter:description" content="<%= meta?.ogDescription || meta?.description || '' %>" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#77f2ff" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <% if (String(page || '').startsWith('admin')) { %>
+    <link rel="stylesheet" href="/styles/admin.css" />
+  <% } else { %>
+    <link rel="stylesheet" href="/styles/site.css" />
+  <% } %>
+</head>

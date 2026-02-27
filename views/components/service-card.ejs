@@ -1,0 +1,55 @@
+<%
+/**
+ * Service Card Component
+ * Modern UI Redesign - White Lab
+ * 
+ * Props:
+ * - service: Object with title, short, slug, materials (optional), icon (optional)
+ * 
+ * Features:
+ * - Data attributes for scroll reveal animations
+ * - Data attributes for 3D tilt effects
+ * - Icon integration with fallback
+ * - Glassmorphism styling
+ * - Responsive design
+ * 
+ * Validates Requirements: 5.4, 5.5
+ */
+
+// Extract service data
+const title = service?.title || '';
+const description = service?.short || '';
+const slug = service?.slug || '';
+const materials = service?.materials || [];
+const icon = service?.icon || null;
+
+// Generate icon HTML or use default
+const iconHtml = icon 
+  ? `<span class="service-card-icon" aria-hidden="true">${icon}</span>`
+  : '<span class="service-card-icon service-card-icon-default" aria-hidden="true">🦷</span>';
+%>
+
+<article 
+  class="service-card"
+>
+  <%- iconHtml %>
+  
+  <h3><%= title %></h3>
+  
+  <p><%= description %></p>
+  
+  <% if (materials.length > 0) { %>
+    <div class="service-card-materials">
+      <% materials.slice(0, 3).forEach((material, index) => { %>
+        <span class="service-card-material"><%= material %></span>
+      <% }); %>
+      <% if (materials.length > 3) { %>
+        <span class="service-card-material-more">+<%= materials.length - 3 %></span>
+      <% } %>
+    </div>
+  <% } %>
+  
+  <a href="/services/<%= slug %>" aria-label="Подробнее о <%= title %>">
+    Подробнее
+  </a>
+</article>

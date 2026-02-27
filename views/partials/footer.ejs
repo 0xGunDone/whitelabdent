@@ -1,0 +1,122 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-main">
+    <!-- Brand & About Section (Requirement 19.3) -->
+    <section class="footer-block footer-brand" aria-labelledby="footer-brand-heading">
+      <h4 id="footer-brand-heading"><%= site?.brand?.name || 'White Lab' %></h4>
+      <p><%= site?.brand?.category || '' %></p>
+      <p><%= site?.brand?.address || '' %>, <%= site?.brand?.city || '' %></p>
+      <% if (site?.brand?.postalCode) { %>
+        <p><%= site?.brand?.postalCode %>, <%= site?.brand?.region || '' %></p>
+      <% } %>
+    </section>
+
+    <!-- Contact Information Section (Requirement 19.3, 19.5) -->
+    <section class="footer-block footer-contact" aria-labelledby="footer-contact-heading">
+      <h4 id="footer-contact-heading">Контакты</h4>
+      <div class="contact-list">
+        <% if (site?.brand?.phoneDisplay) { %>
+          <a href="tel:<%= site?.brand?.phoneValue || '' %>" class="contact-item" aria-label="Позвонить по телефону <%= site?.brand?.phoneDisplay %>">
+            <svg class="contact-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span><%= site?.brand?.phoneDisplay %></span>
+          </a>
+        <% } %>
+        <% if (site?.brand?.email) { %>
+          <a href="mailto:<%= site?.brand?.email %>" class="contact-item" aria-label="Написать на электронную почту <%= site?.brand?.email %>">
+            <svg class="contact-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span><%= site?.brand?.email %></span>
+          </a>
+        <% } %>
+        <% if (site?.brand?.workHours) { %>
+          <div class="contact-item" aria-label="Часы работы">
+            <svg class="contact-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span><%= site?.brand?.workHours %></span>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Map & Location Section (Requirement 19.5) -->
+    <section class="footer-block footer-map" aria-labelledby="footer-map-heading">
+      <h4 id="footer-map-heading">Мы на карте</h4>
+      <div class="map-links">
+        <% if (site?.brand?.map2gis) { %>
+          <a href="<%= site?.brand?.map2gis %>" target="_blank" rel="noopener noreferrer" class="map-link" aria-label="Открыть в 2GIS">
+            <svg class="map-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Открыть в 2GIS</span>
+          </a>
+        <% } %>
+        <% if (site?.brand?.mapYandex) { %>
+          <a href="<%= site?.brand?.mapYandex %>" target="_blank" rel="noopener noreferrer" class="map-link" aria-label="Открыть в Яндекс Картах">
+            <svg class="map-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Открыть в Яндекс Картах</span>
+          </a>
+        <% } %>
+        <% if (site?.brand?.coordinates?.lat && site?.brand?.coordinates?.lng) { %>
+          <div class="coordinates" aria-label="Географические координаты">
+            <svg class="map-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span><%= site?.brand?.coordinates?.lat.toFixed(6) %>, <%= site?.brand?.coordinates?.lng.toFixed(6) %></span>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Social & Sources Section (Requirement 19.3) -->
+    <section class="footer-block footer-social" aria-labelledby="footer-social-heading">
+      <h4 id="footer-social-heading">Мы в соцсетях</h4>
+      <% const sourceMap = [
+        { key: 'instagram.com', label: 'Инстаграм', icon: 'instagram' },
+        { key: '2gis.ru', label: '2GIS', icon: 'map' },
+        { key: 'yandex.ru/maps', label: 'Яндекс Карты', icon: 'map' }
+      ]; %>
+      <div class="social-links">
+        <% if (site?.brand?.instagram) { %>
+          <a href="<%= site?.brand?.instagram %>" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Наш Инстаграм">
+            <svg class="social-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            <span>Инстаграм</span>
+          </a>
+        <% } %>
+        <% for (const link of (site?.sourceLinks || [])) { %>
+          <% const matched = sourceMap.find((item) => link.includes(item.key)); %>
+          <% if (matched && !link.includes('instagram.com')) { %>
+            <a href="<%= link %>" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="<%= matched.label %>">
+              <svg class="social-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <span><%= matched.label %></span>
+            </a>
+          <% } %>
+        <% } %>
+      </div>
+    </section>
+  </div>
+
+  <div class="container footer-bottom">
+    <div class="footer-note">
+      <span>© <%= new Date().getFullYear() %> <%= site?.brand?.legalName || site?.brand?.name || 'White Lab' %></span>
+      <span>Создано <a href="https://wemakecode.ru/admin" target="_blank" rel="noopener noreferrer">WeMakeCode</a></span>
+    </div>
+  </div>
+</footer>

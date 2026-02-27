@@ -1,0 +1,683 @@
+/**
+ * Transitions
+ * Modern UI Redesign - White Lab
+ * 
+ * This file contains transition classes for various effects:
+ * - Smooth transitions for interactive elements (Requirement 2.2)
+ * - Support for prefers-reduced-motion (Requirements 10.5, 16.5)
+ * 
+ * All transitions use transform and opacity for optimal performance.
+ */
+
+/* ========================================
+   Base Transition Classes
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Transition All - Smooth transition for all properties
+ * Use sparingly - prefer specific property transitions
+ */
+.transition-all {
+  transition: all var(--transition-base);
+}
+
+/**
+ * Transition Fast - Quick transitions
+ * Used for: Subtle hover effects, small UI changes
+ */
+.transition-fast {
+  transition: all var(--transition-fast);
+}
+
+/**
+ * Transition Base - Standard transitions
+ * Used for: Most interactive elements
+ */
+.transition-base {
+  transition: all var(--transition-base);
+}
+
+/**
+ * Transition Slow - Slower, more dramatic transitions
+ * Used for: Large movements, important state changes
+ */
+.transition-slow {
+  transition: all var(--transition-slow);
+}
+
+/* ========================================
+   Property-Specific Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Transform Transitions - For movement and scaling
+ * Optimal performance (GPU-accelerated)
+ */
+.transition-transform {
+  transition: transform var(--transition-base);
+}
+
+.transition-transform-fast {
+  transition: transform var(--transition-fast);
+}
+
+.transition-transform-slow {
+  transition: transform var(--transition-slow);
+}
+
+/**
+ * Opacity Transitions - For fade effects
+ * Optimal performance (GPU-accelerated)
+ */
+.transition-opacity {
+  transition: opacity var(--transition-base);
+}
+
+.transition-opacity-fast {
+  transition: opacity var(--transition-fast);
+}
+
+.transition-opacity-slow {
+  transition: opacity var(--transition-slow);
+}
+
+/**
+ * Color Transitions - For color changes
+ * Used for: Text color, background color changes
+ */
+.transition-colors {
+  transition: color var(--transition-base), 
+              background-color var(--transition-base), 
+              border-color var(--transition-base);
+}
+
+.transition-colors-fast {
+  transition: color var(--transition-fast), 
+              background-color var(--transition-fast), 
+              border-color var(--transition-fast);
+}
+
+/**
+ * Shadow Transitions - For shadow effects
+ * Used for: Elevation changes, hover effects
+ */
+.transition-shadow {
+  transition: box-shadow var(--transition-base);
+}
+
+.transition-shadow-fast {
+  transition: box-shadow var(--transition-fast);
+}
+
+/**
+ * Combined Transitions - Common combinations
+ */
+.transition-transform-opacity {
+  transition: transform var(--transition-base), 
+              opacity var(--transition-base);
+}
+
+.transition-transform-shadow {
+  transition: transform var(--transition-base), 
+              box-shadow var(--transition-base);
+}
+
+.transition-colors-shadow {
+  transition: color var(--transition-base), 
+              background-color var(--transition-base), 
+              border-color var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+/* ========================================
+   Easing Functions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Ease In - Slow start, fast end
+ * Used for: Elements leaving the screen
+ */
+.ease-in {
+  transition-timing-function: ease-in;
+}
+
+/**
+ * Ease Out - Fast start, slow end
+ * Used for: Elements entering the screen
+ */
+.ease-out {
+  transition-timing-function: ease-out;
+}
+
+/**
+ * Ease In Out - Slow start and end
+ * Used for: Smooth, natural movements
+ */
+.ease-in-out {
+  transition-timing-function: ease-in-out;
+}
+
+/**
+ * Custom Cubic Bezier Easings
+ */
+.ease-smooth {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ease-bounce {
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.ease-elastic {
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ========================================
+   Hover Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Hover Lift - Lift element on hover
+ * Used for: Cards, buttons, interactive elements
+ */
+.hover-lift {
+  transition: transform var(--transition-base), 
+              box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/**
+ * Hover Scale - Scale up on hover
+ * Used for: Images, thumbnails, icons
+ */
+.hover-scale {
+  transition: transform var(--transition-base);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/**
+ * Hover Scale Small - Subtle scale on hover
+ * Used for: Buttons, small interactive elements
+ */
+.hover-scale-sm {
+  transition: transform var(--transition-fast);
+}
+
+.hover-scale-sm:hover {
+  transform: scale(1.02);
+}
+
+/**
+ * Hover Glow - Add glow on hover
+ * Used for: Buttons, CTAs, important elements
+ */
+.hover-glow {
+  transition: box-shadow var(--transition-base);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(55, 208, 190, 0.4);
+}
+
+/**
+ * Hover Brighten - Increase brightness on hover
+ * Used for: Images, media elements
+ */
+.hover-brighten {
+  transition: filter var(--transition-base);
+}
+
+.hover-brighten:hover {
+  filter: brightness(1.1);
+}
+
+/**
+ * Hover Opacity - Reduce opacity on hover
+ * Used for: Links, subtle interactions
+ */
+.hover-opacity {
+  transition: opacity var(--transition-fast);
+}
+
+.hover-opacity:hover {
+  opacity: var(--opacity-hover);
+}
+
+/* ========================================
+   Focus Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Focus Ring - Visible focus indicator
+ * Used for: All interactive elements (accessibility)
+ */
+.focus-ring {
+  transition: outline var(--transition-fast), 
+              outline-offset var(--transition-fast);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-ring:focus-visible {
+  outline-color: var(--color-brand-primary);
+  outline-offset: 4px;
+}
+
+/**
+ * Focus Glow - Glowing focus effect
+ * Used for: Form inputs, important interactive elements
+ */
+.focus-glow {
+  transition: box-shadow var(--transition-fast);
+}
+
+.focus-glow:focus-visible {
+  box-shadow: 0 0 0 3px rgba(55, 208, 190, 0.3);
+}
+
+/* ========================================
+   State Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Active Scale - Scale down on active/press
+ * Used for: Buttons, clickable elements
+ */
+.active-scale {
+  transition: transform var(--transition-fast);
+}
+
+.active-scale:active {
+  transform: scale(0.95);
+}
+
+/**
+ * Disabled State - Visual feedback for disabled elements
+ * Used for: Buttons, inputs, interactive elements
+ */
+.transition-disabled {
+  transition: opacity var(--transition-base), 
+              filter var(--transition-base);
+}
+
+.transition-disabled:disabled,
+.transition-disabled[aria-disabled="true"] {
+  opacity: var(--opacity-disabled);
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+}
+
+/* ========================================
+   Slide Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Slide In/Out - For panels, menus, drawers
+ */
+.slide-in-right {
+  transition: transform var(--transition-base);
+  transform: translateX(100%);
+}
+
+.slide-in-right.is-open {
+  transform: translateX(0);
+}
+
+.slide-in-left {
+  transition: transform var(--transition-base);
+  transform: translateX(-100%);
+}
+
+.slide-in-left.is-open {
+  transform: translateX(0);
+}
+
+.slide-in-top {
+  transition: transform var(--transition-base);
+  transform: translateY(-100%);
+}
+
+.slide-in-top.is-open {
+  transform: translateY(0);
+}
+
+.slide-in-bottom {
+  transition: transform var(--transition-base);
+  transform: translateY(100%);
+}
+
+.slide-in-bottom.is-open {
+  transform: translateY(0);
+}
+
+/* ========================================
+   Collapse/Expand Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Collapse - Smooth height transitions
+ * Used for: Accordions, expandable sections
+ */
+.collapse {
+  transition: height var(--transition-base), 
+              opacity var(--transition-base);
+  overflow: hidden;
+}
+
+.collapse:not(.is-open) {
+  height: 0;
+  opacity: 0;
+}
+
+/**
+ * Expand Width - Smooth width transitions
+ * Used for: Sidebars, expandable panels
+ */
+.expand-width {
+  transition: width var(--transition-base);
+  overflow: hidden;
+}
+
+/* ========================================
+   Fade Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Fade - Simple fade in/out
+ * Used for: Overlays, modals, tooltips
+ */
+.fade {
+  transition: opacity var(--transition-base);
+}
+
+.fade:not(.is-visible) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fade.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/**
+ * Fade Scale - Fade with scale
+ * Used for: Modals, popups
+ */
+.fade-scale {
+  transition: opacity var(--transition-base), 
+              transform var(--transition-base);
+}
+
+.fade-scale:not(.is-visible) {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+.fade-scale.is-visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* ========================================
+   Backdrop Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Backdrop Blur - Smooth backdrop filter transitions
+ * Used for: Headers, overlays, glassmorphism effects
+ */
+.backdrop-transition {
+  transition: backdrop-filter var(--transition-base), 
+              background-color var(--transition-base);
+}
+
+/* ========================================
+   Loading State Transitions
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Loading - Smooth transition to loading state
+ * Used for: Buttons, forms, async operations
+ */
+.loading-transition {
+  transition: opacity var(--transition-fast), 
+              transform var(--transition-fast);
+}
+
+.loading-transition.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ========================================
+   Stagger Delays
+   Requirement 2.2
+   ======================================== */
+
+/**
+ * Stagger delays for sequential animations
+ * Used with JavaScript to create cascading effects
+ */
+.stagger-1 {
+  transition-delay: 50ms;
+}
+
+.stagger-2 {
+  transition-delay: 100ms;
+}
+
+.stagger-3 {
+  transition-delay: 150ms;
+}
+
+.stagger-4 {
+  transition-delay: 200ms;
+}
+
+.stagger-5 {
+  transition-delay: 250ms;
+}
+
+.stagger-6 {
+  transition-delay: 300ms;
+}
+
+/* ========================================
+   Performance Optimizations
+   ======================================== */
+
+/**
+ * Will Change - Hint browser for optimization
+ * Use sparingly and remove after animation
+ */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* ========================================
+   Reduced Motion Support
+   Requirements 10.5, 16.5
+   ======================================== */
+
+/**
+ * Disable or significantly reduce all transitions
+ * when user prefers reduced motion
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  
+  /* Disable hover effects that involve movement */
+  .hover-lift:hover,
+  .hover-scale:hover,
+  .hover-scale-sm:hover {
+    transform: none !important;
+  }
+  
+  /* Keep only opacity changes for essential feedback */
+  .hover-opacity:hover,
+  .transition-disabled:disabled,
+  .transition-disabled[aria-disabled="true"] {
+    transition: opacity 0.01ms !important;
+  }
+  
+  /* Disable will-change hints */
+  .will-change-transform,
+  .will-change-opacity {
+    will-change: auto !important;
+  }
+  
+  /* Keep focus indicators for accessibility */
+  .focus-ring:focus-visible,
+  .focus-glow:focus-visible {
+    transition: none !important;
+  }
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+/**
+ * No Transition - Disable transitions
+ * Used for: Instant state changes, initial setup
+ */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
+/**
+ * Transition None - Remove transition from element
+ */
+.transition-none {
+  transition: none;
+}
+
+/**
+ * Smooth Scroll - Smooth scrolling behavior
+ * Used for: Anchor links, scroll-to-top
+ */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smooth-scroll {
+    scroll-behavior: auto;
+  }
+}
+
+/* ========================================
+   Scroll Reveal Animations
+   Used with scroll-reveal.js for scroll-triggered animations
+   ======================================== */
+
+/**
+ * Reveal Hidden - Initial hidden state
+ * Applied before element enters viewport
+ */
+.reveal-hidden {
+  opacity: 0;
+  transition: opacity var(--transition-slow), 
+              transform var(--transition-slow);
+}
+
+/**
+ * Reveal Visible - Visible state
+ * Applied when element enters viewport
+ */
+.reveal-visible {
+  opacity: 1;
+  transform: translate(0, 0) !important;
+}
+
+/**
+ * Reveal Direction Classes
+ * Define the direction from which elements animate in
+ */
+
+/* Reveal from bottom (up) */
+.reveal-from-up.reveal-hidden {
+  transform: translateY(30px);
+}
+
+/* Reveal from top (down) */
+.reveal-from-down.reveal-hidden {
+  transform: translateY(-30px);
+}
+
+/* Reveal from left */
+.reveal-from-left.reveal-hidden {
+  transform: translateX(-30px);
+}
+
+/* Reveal from right */
+.reveal-from-right.reveal-hidden {
+  transform: translateX(30px);
+}
+
+/**
+ * Reveal with scale
+ * Combines fade with scale effect
+ */
+.reveal-scale.reveal-hidden {
+  transform: scale(0.95);
+}
+
+.reveal-scale.reveal-visible {
+  transform: scale(1) !important;
+}
+
+/**
+ * Reduced Motion Support for Reveal Animations
+ */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden,
+  .reveal-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  .reveal-from-up,
+  .reveal-from-down,
+  .reveal-from-left,
+  .reveal-from-right,
+  .reveal-scale {
+    transform: none !important;
+  }
+}

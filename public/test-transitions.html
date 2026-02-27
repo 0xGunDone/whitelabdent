@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transitions Test - White Lab</title>
+  <link rel="stylesheet" href="/styles/site.css">
+  <style>
+    body {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .test-section h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .test-box {
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 12px;
+      background: linear-gradient(165deg, rgba(10, 15, 22, 0.97), rgba(5, 8, 13, 0.98));
+      text-align: center;
+      cursor: pointer;
+    }
+    .test-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--color-text-primary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+    .slide-demo {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .slide-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 100%;
+      background: linear-gradient(165deg, rgba(55, 208, 190, 0.2), rgba(116, 229, 255, 0.1));
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fade-demo {
+      position: relative;
+      height: 200px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fade-content {
+      padding: 2rem;
+      background: linear-gradient(165deg, rgba(55, 208, 190, 0.2), rgba(116, 229, 255, 0.1));
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Transitions Test Page</h1>
+  <p style="color: var(--color-text-secondary); margin-bottom: 2rem;">
+    Testing transition classes from transitions.css
+  </p>
+
+  <!-- Hover Effects -->
+  <div class="test-section">
+    <h2>Hover Effects</h2>
+    <div class="test-grid">
+      <div class="test-box hover-lift">
+        <p>Hover Lift</p>
+      </div>
+      <div class="test-box hover-scale">
+        <p>Hover Scale</p>
+      </div>
+      <div class="test-box hover-scale-sm">
+        <p>Hover Scale Small</p>
+      </div>
+      <div class="test-box hover-glow">
+        <p>Hover Glow</p>
+      </div>
+      <div class="test-box hover-brighten">
+        <p>Hover Brighten</p>
+      </div>
+      <div class="test-box hover-opacity">
+        <p>Hover Opacity</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transition Speeds -->
+  <div class="test-section">
+    <h2>Transition Speeds</h2>
+    <div class="test-grid">
+      <div class="test-box transition-fast hover-lift">
+        <p>Fast (150ms)</p>
+      </div>
+      <div class="test-box transition-base hover-lift">
+        <p>Base (250ms)</p>
+      </div>
+      <div class="test-box transition-slow hover-lift">
+        <p>Slow (350ms)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Easing Functions -->
+  <div class="test-section">
+    <h2>Easing Functions</h2>
+    <div class="test-grid">
+      <div class="test-box transition-transform hover-lift ease-in">
+        <p>Ease In</p>
+      </div>
+      <div class="test-box transition-transform hover-lift ease-out">
+        <p>Ease Out</p>
+      </div>
+      <div class="test-box transition-transform hover-lift ease-in-out">
+        <p>Ease In Out</p>
+      </div>
+      <div class="test-box transition-transform hover-lift ease-smooth">
+        <p>Smooth</p>
+      </div>
+      <div class="test-box transition-transform hover-lift ease-bounce">
+        <p>Bounce</p>
+      </div>
+      <div class="test-box transition-transform hover-lift ease-elastic">
+        <p>Elastic</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Focus States -->
+  <div class="test-section">
+    <h2>Focus States (Tab to test)</h2>
+    <div class="test-grid">
+      <button class="test-button focus-ring">Focus Ring</button>
+      <button class="test-button focus-glow">Focus Glow</button>
+      <button class="test-button focus-ring active-scale">Focus + Active Scale</button>
+    </div>
+  </div>
+
+  <!-- Slide Transitions -->
+  <div class="test-section">
+    <h2>Slide Transitions</h2>
+    <div class="slide-demo">
+      <div class="slide-panel slide-in-right" id="slidePanel">
+        <p>Slide Panel</p>
+      </div>
+    </div>
+    <button class="test-button" onclick="toggleSlide()" style="margin-top: 1rem;">
+      Toggle Slide Panel
+    </button>
+  </div>
+
+  <!-- Fade Transitions -->
+  <div class="test-section">
+    <h2>Fade Transitions</h2>
+    <div class="fade-demo">
+      <div class="fade-content fade-scale" id="fadeContent">
+        <p>Fade Scale Content</p>
+      </div>
+    </div>
+    <button class="test-button" onclick="toggleFade()" style="margin-top: 1rem;">
+      Toggle Fade
+    </button>
+  </div>
+
+  <!-- Disabled State -->
+  <div class="test-section">
+    <h2>Disabled State</h2>
+    <div class="test-grid">
+      <button class="test-button transition-disabled">Enabled Button</button>
+      <button class="test-button transition-disabled" disabled>Disabled Button</button>
+    </div>
+  </div>
+
+  <!-- Reduced Motion Notice -->
+  <div class="test-section">
+    <h2>Reduced Motion Support</h2>
+    <p style="color: var(--color-text-secondary);">
+      All transitions respect the prefers-reduced-motion media query. 
+      To test, enable "Reduce motion" in your system accessibility settings.
+    </p>
+  </div>
+
+  <script>
+    function toggleSlide() {
+      const panel = document.getElementById('slidePanel');
+      panel.classList.toggle('is-open');
+    }
+
+    function toggleFade() {
+      const content = document.getElementById('fadeContent');
+      content.classList.toggle('is-visible');
+    }
+
+    // Initialize fade content as visible
+    document.getElementById('fadeContent').classList.add('is-visible');
+  </script>
+</body>
+</html>

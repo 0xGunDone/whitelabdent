@@ -1,0 +1,404 @@
+/**
+ * Header Component Styles
+ * Modern UI Redesign - White Lab
+ * 
+ * Implements sticky header with backdrop-filter blur effect,
+ * scroll state transitions, and responsive mobile navigation.
+ * 
+ * Validates Requirements: 4.1, 4.2, 4.3
+ */
+
+/* ========================================
+   Base Header Styles
+   ======================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  width: 100%;
+  
+  /* Backdrop filter for glassmorphism effect */
+  backdrop-filter: var(--backdrop-blur-lg);
+  -webkit-backdrop-filter: var(--backdrop-blur-lg);
+  
+  /* Semi-transparent background */
+  background: rgba(5, 8, 12, 0.83);
+  
+  /* Subtle border */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  
+  /* Smooth transitions for all properties */
+  transition: background var(--transition-base),
+              border-color var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(14px)) {
+  .site-header {
+    background: rgba(5, 8, 12, 0.98);
+  }
+}
+
+/* ========================================
+   Scrolled State
+   ======================================== */
+
+.site-header.is-scrolled {
+  /* More opaque background when scrolled */
+  background: rgba(5, 8, 12, 0.95);
+  
+  /* Enhanced border visibility */
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  
+  /* Add shadow for depth */
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   Header Container
+   ======================================== */
+
+.nav-wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-xl);
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+/* ========================================
+   Brand/Logo
+   ======================================== */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  
+  color: var(--color-text-primary);
+  text-decoration: none;
+  
+  transition: opacity var(--transition-fast);
+}
+
+.brand:hover {
+  opacity: var(--opacity-hover);
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: 40px;
+  height: 40px;
+  
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-bg-primary);
+  
+  background: var(--gradient-brand);
+  border-radius: var(--radius-sm);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-text strong {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.brand-text small {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: 1;
+}
+
+/* ========================================
+   Navigation
+   ======================================== */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-links a {
+  position: relative;
+  display: block;
+  padding: var(--space-sm) 0;
+  
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  
+  transition: color var(--transition-fast);
+}
+
+.nav-links a:hover,
+.nav-links a:focus {
+  color: var(--color-text-primary);
+}
+
+/* Active state indicator */
+.nav-links a.is-active {
+  color: var(--color-brand-primary);
+}
+
+/* Animated underline on hover */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-brand);
+  transition: width var(--transition-base);
+}
+
+.nav-links a:hover::after,
+.nav-links a:focus::after,
+.nav-links a.is-active::after {
+  width: 100%;
+}
+
+/* ========================================
+   CTA Button
+   ======================================== */
+
+.call-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  
+  padding: var(--space-sm) var(--space-lg);
+  
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-bg-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  
+  background: var(--gradient-brand);
+  border: none;
+  border-radius: var(--radius-full);
+  
+  cursor: pointer;
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.call-btn:hover,
+.call-btn:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(55, 208, 190, 0.3);
+}
+
+.call-btn:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   Mobile Menu Toggle
+   ======================================== */
+
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  
+  transition: opacity var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+  opacity: var(--opacity-hover);
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text-primary);
+  border-radius: 2px;
+  transition: transform var(--transition-base),
+              opacity var(--transition-base);
+}
+
+/* Animated hamburger to X transformation */
+.mobile-menu-toggle.is-active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-toggle.is-active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.is-active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ========================================
+   Responsive Styles - Tablet
+   ======================================== */
+
+@media (max-width: 1100px) {
+  .nav-wrap {
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .nav-links {
+    gap: var(--space-lg);
+  }
+  
+  .nav-links a {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* ========================================
+   Responsive Styles - Mobile
+   ======================================== */
+
+@media (max-width: 760px) {
+  .nav-wrap {
+    padding: var(--space-md);
+  }
+  
+  /* Show mobile menu toggle */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  /* Hide desktop navigation */
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2xl);
+    
+    background: rgba(5, 8, 12, 0.98);
+    backdrop-filter: var(--backdrop-blur-lg);
+    -webkit-backdrop-filter: var(--backdrop-blur-lg);
+    
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    
+    transition: opacity var(--transition-base),
+                visibility var(--transition-base),
+                transform var(--transition-base);
+    
+    z-index: calc(var(--z-sticky) - 1);
+  }
+  
+  /* Show mobile menu when active */
+  .nav-links.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* Mobile menu links */
+  .nav-links a {
+    font-size: var(--font-size-xl);
+    padding: var(--space-md) 0;
+  }
+  
+  /* Center the underline animation */
+  .nav-links a::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .nav-links a:hover::after,
+  .nav-links a:focus::after,
+  .nav-links a.is-active::after {
+    width: 80%;
+  }
+  
+  /* Larger CTA on mobile */
+  .call-btn {
+    padding: var(--space-md) var(--space-xl);
+    font-size: var(--font-size-lg);
+  }
+  
+  /* Hide brand text on very small screens */
+  .brand-text small {
+    display: none;
+  }
+  
+  /* Prevent body scroll when mobile menu is open */
+  body.mobile-menu-open {
+    overflow: hidden;
+  }
+}
+
+/* ========================================
+   Focus Styles for Accessibility
+   ======================================== */
+
+.nav-links a:focus-visible,
+.call-btn:focus-visible,
+.mobile-menu-toggle:focus-visible,
+.brand:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* ========================================
+   Reduced Motion Support
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .nav-links a,
+  .nav-links a::after,
+  .call-btn,
+  .brand,
+  .mobile-menu-toggle span,
+  .nav-links {
+    transition-duration: 0.01ms !important;
+  }
+}

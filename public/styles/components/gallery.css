@@ -1,0 +1,721 @@
+/**
+ * Media Gallery Component
+ * Modern UI Redesign - White Lab
+ * 
+ * Features:
+ * - Masonry grid layout using CSS Grid
+ * - Hover effects with zoom and overlay
+ * - Filter styles with smooth animations
+ * - Lazy loading support
+ * - Responsive design
+ * 
+ * Validates Requirements: 6.1, 6.2, 6.3
+ */
+
+/* ========================================
+   Gallery Container
+   ======================================== */
+
+.media-cinema {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: var(--space-2xl) 0;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(55, 208, 190, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(8, 12, 17, 0.98), rgba(6, 9, 14, 0.98));
+}
+
+/* ========================================
+   Animated Background Orbs
+   ======================================== */
+
+.media-cinema-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cinema-orb {
+  position: absolute;
+  width: 14rem;
+  height: 14rem;
+  border-radius: var(--radius-full);
+  filter: blur(26px);
+  opacity: 0.34;
+  animation: orbPulse 7s ease-in-out infinite;
+}
+
+.cinema-orb-a {
+  right: -5rem;
+  top: -5rem;
+  background: rgba(55, 208, 190, 0.42);
+}
+
+.cinema-orb-b {
+  left: -5rem;
+  bottom: -6rem;
+  background: rgba(116, 229, 255, 0.36);
+  animation-delay: 2s;
+}
+
+@keyframes orbPulse {
+  0%, 100% {
+    opacity: 0.32;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.54;
+    transform: scale(1.08);
+  }
+}
+
+/* ========================================
+   Filter Toolbar
+   ======================================== */
+
+.media-toolbar {
+  position: relative;
+  z-index: var(--z-base);
+  margin: 0 0 var(--space-lg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.media-filter {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-text-secondary);
+  
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  
+  transition: 
+    border-color var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-base),
+    background var(--transition-base);
+  
+  /* Prevent text selection on filter buttons */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.media-filter:hover {
+  border-color: rgba(55, 208, 190, 0.5);
+  color: var(--color-brand-primary);
+  transform: translateY(-1px);
+  background: rgba(55, 208, 190, 0.05);
+}
+
+.media-filter:active {
+  transform: translateY(0);
+}
+
+.media-filter.active {
+  border-color: rgba(55, 208, 190, 0.75);
+  color: var(--color-brand-primary);
+  background: rgba(55, 208, 190, 0.1);
+  box-shadow: 0 0 20px rgba(55, 208, 190, 0.2);
+}
+
+/* Focus state for keyboard navigation */
+.media-filter:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Masonry Grid Layout
+   ======================================== */
+
+.media-mosaic {
+  position: relative;
+  z-index: var(--z-base);
+  
+  /* CSS Grid masonry layout */
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 4.9rem;
+  grid-auto-flow: dense;
+  gap: var(--space-sm);
+  
+  /* Performance optimization */
+  will-change: contents;
+}
+
+/* Grid item size variants */
+.media-tile-hero {
+  grid-column: span 5;
+  grid-row: span 4;
+}
+
+.media-tile-wide {
+  grid-column: span 4;
+  grid-row: span 3;
+}
+
+.media-tile-tall {
+  grid-column: span 3;
+  grid-row: span 4;
+}
+
+.media-tile-mini {
+  grid-column: span 3;
+  grid-row: span 2;
+}
+
+/* ========================================
+   Media Tile Base Styles
+   ======================================== */
+
+.media-tile {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: var(--color-bg-secondary);
+  
+  box-shadow: var(--shadow-md);
+  
+  transition: 
+    transform var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    filter var(--transition-base);
+  
+  /* Performance optimization */
+  will-change: transform;
+  
+  /* Ensure proper stacking context */
+  isolation: isolate;
+}
+
+/* ========================================
+   Tile Shape Variations
+   ======================================== */
+
+.media-tile-shape-a {
+  border-radius: 18px 10px 20px 8px;
+  --lift-rotate-z: -0.35deg;
+}
+
+.media-tile-shape-b {
+  border-radius: 10px 20px 8px 18px;
+  --lift-rotate-z: 0.42deg;
+}
+
+.media-tile-shape-c {
+  border-radius: 16px 12px 22px 6px;
+  --lift-rotate-z: -0.28deg;
+}
+
+.media-tile-shape-d {
+  border-radius: 9px 19px 9px 19px;
+  --lift-rotate-z: 0.3deg;
+}
+
+.media-tile-shape-e {
+  border-radius: 22px 7px 16px 12px;
+  --lift-rotate-z: -0.22deg;
+}
+
+.media-tile-shape-f {
+  border-radius: 12px 18px 10px 20px;
+  --lift-rotate-z: 0.24deg;
+}
+
+/* ========================================
+   Shine/Sweep Effect
+   ======================================== */
+
+.media-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 48%,
+    transparent 100%
+  );
+  
+  mix-blend-mode: screen;
+  opacity: 0.16;
+  
+  transform: translateX(-130%);
+  animation: tileSweep 9s linear infinite;
+  animation-delay: var(--tile-delay, 0s);
+}
+
+@keyframes tileSweep {
+  0% {
+    transform: translateX(-130%);
+  }
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+/* Staggered animation delays */
+.media-tile:nth-child(2n)::before {
+  animation-delay: calc(var(--tile-delay, 0s) - 2.4s);
+}
+
+.media-tile:nth-child(3n)::before {
+  animation-delay: calc(var(--tile-delay, 0s) - 5.1s);
+}
+
+/* ========================================
+   Hover Overlay Effect
+   ======================================== */
+
+.media-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 52%,
+      rgba(0, 0, 0, 0.5) 100%
+    ),
+    linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.12),
+      transparent 38%,
+      transparent 65%,
+      rgba(255, 255, 255, 0.08)
+    );
+  
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+/* ========================================
+   Media Content (Image/Video)
+   ======================================== */
+
+.media-tile img,
+.media-tile video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  
+  position: relative;
+  z-index: 0;
+  
+  transition: 
+    transform var(--transition-base),
+    filter var(--transition-base);
+  
+  /* Lazy loading placeholder */
+  background: var(--color-surface);
+}
+
+/* Lazy loading state */
+.media-tile img[loading="lazy"] {
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   Caption/Metadata Overlay
+   ======================================== */
+
+.media-tile figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+  
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(5, 9, 14, 0.72)
+  );
+  
+  /* Ensure caption is readable */
+  backdrop-filter: blur(4px);
+}
+
+.media-tile figcaption span,
+.media-tile figcaption small {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  background: rgba(4, 8, 12, 0.56);
+  backdrop-filter: blur(6px);
+  
+  padding: 0.12rem var(--space-sm);
+  color: var(--color-text-primary);
+  
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  white-space: nowrap;
+  
+  transition: 
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.media-tile figcaption span {
+  font-size: 0.6rem;
+}
+
+.media-tile figcaption small {
+  font-size: 0.57rem;
+  font-weight: 800;
+}
+
+/* ========================================
+   Hover Effects
+   ======================================== */
+
+.media-tile:hover {
+  /* Lift and slight rotation */
+  transform: 
+    translateY(-3px) 
+    rotate(var(--lift-rotate-z, 0deg));
+  
+  /* Enhanced border glow */
+  border-color: rgba(55, 208, 190, 0.55);
+  
+  /* Enhanced shadow */
+  box-shadow: 
+    0 16px 34px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(55, 208, 190, 0.2) inset;
+  
+  /* Slight saturation boost */
+  filter: saturate(1.05);
+}
+
+/* Show overlay on hover */
+.media-tile:hover::after {
+  opacity: 1;
+}
+
+/* Zoom effect on image */
+.media-tile:hover img,
+.media-tile:hover video {
+  transform: scale(1.05);
+  filter: saturate(1.06) contrast(1.05);
+}
+
+/* Enhance caption on hover */
+.media-tile:hover figcaption span,
+.media-tile:hover figcaption small {
+  background: rgba(4, 8, 12, 0.8);
+  border-color: rgba(55, 208, 190, 0.4);
+}
+
+/* ========================================
+   Filter Animation States
+   ======================================== */
+
+/* Hidden state for filtered items */
+.media-tile.is-hidden {
+  display: none;
+}
+
+/* Fade out animation */
+.media-tile.is-filtering-out {
+  animation: filterOut 0.3s ease forwards;
+}
+
+@keyframes filterOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* Fade in animation */
+.media-tile.is-filtering-in {
+  animation: filterIn 0.4s ease forwards;
+}
+
+@keyframes filterIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ========================================
+   Reel/Carousel Layout (Alternative)
+   ======================================== */
+
+.reel-strip {
+  position: relative;
+  z-index: var(--z-base);
+  margin-top: var(--space-lg);
+  
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(16rem, 1fr);
+  gap: var(--space-md);
+  
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: var(--space-sm);
+  
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(55, 208, 190, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+.reel-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.reel-strip::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+.reel-strip::-webkit-scrollbar-thumb {
+  background: rgba(55, 208, 190, 0.3);
+  border-radius: var(--radius-sm);
+}
+
+.reel-strip::-webkit-scrollbar-thumb:hover {
+  background: rgba(55, 208, 190, 0.5);
+}
+
+.reel-item {
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+  
+  transition: 
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+.reel-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(55, 208, 190, 0.56);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.32);
+}
+
+.reel-item video,
+.reel-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+/* Tablet layout */
+@media (max-width: 1023px) {
+  .media-mosaic {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-auto-rows: 5.5rem;
+  }
+  
+  .media-tile-hero {
+    grid-column: span 4;
+    grid-row: span 3;
+  }
+  
+  .media-tile-wide {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+  
+  .media-tile-tall {
+    grid-column: span 4;
+    grid-row: span 3;
+  }
+  
+  .media-tile-mini {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 767px) {
+  .media-cinema {
+    padding: var(--space-xl) 0;
+  }
+  
+  .media-toolbar {
+    margin-bottom: var(--space-md);
+  }
+  
+  .media-filter {
+    font-size: 0.65rem;
+    padding: 0.35rem var(--space-sm);
+  }
+  
+  .media-mosaic {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 6rem;
+    gap: var(--space-xs);
+  }
+  
+  .media-tile-hero,
+  .media-tile-wide,
+  .media-tile-tall,
+  .media-tile-mini {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+  
+  /* Simplify effects on mobile */
+  .media-tile:hover {
+    transform: translateY(-2px);
+  }
+  
+  .media-tile:hover img,
+  .media-tile:hover video {
+    transform: scale(1.02);
+  }
+  
+  /* Smaller caption text */
+  .media-tile figcaption span {
+    font-size: 0.55rem;
+  }
+  
+  .media-tile figcaption small {
+    font-size: 0.52rem;
+  }
+  
+  .reel-strip {
+    grid-auto-columns: minmax(12rem, 1fr);
+  }
+}
+
+/* ========================================
+   Touch Device Optimizations
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  .media-tile:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.11);
+    box-shadow: var(--shadow-md);
+    filter: none;
+  }
+  
+  .media-tile:hover::after {
+    opacity: 0;
+  }
+  
+  .media-tile:hover img,
+  .media-tile:hover video {
+    transform: none;
+    filter: none;
+  }
+  
+  /* Apply effects on tap/active instead */
+  .media-tile:active {
+    transform: scale(0.98);
+    border-color: rgba(55, 208, 190, 0.4);
+  }
+}
+
+/* ========================================
+   Reduced Motion Support
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .media-tile,
+  .media-filter,
+  .reel-item {
+    transition: none;
+    animation: none;
+  }
+  
+  .media-tile::before {
+    display: none;
+  }
+  
+  .cinema-orb {
+    animation: none;
+  }
+  
+  .media-tile:hover {
+    transform: none;
+  }
+  
+  .media-tile:hover img,
+  .media-tile:hover video {
+    transform: none;
+  }
+  
+  .media-tile.is-filtering-out,
+  .media-tile.is-filtering-in {
+    animation: none;
+  }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+  .media-toolbar {
+    display: none;
+  }
+  
+  .media-tile::before,
+  .media-tile::after {
+    display: none;
+  }
+  
+  .cinema-orb {
+    display: none;
+  }
+}

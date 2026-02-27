@@ -1,0 +1,417 @@
+/**
+ * Service Cards Component
+ * Modern UI Redesign - White Lab
+ * 
+ * Features:
+ * - Glassmorphism effects with backdrop-filter
+ * - 3D tilt hover effects
+ * - Adaptive grid layout
+ * - Smooth animations and transitions
+ * 
+ * Validates Requirements: 5.1, 5.2, 5.3
+ */
+
+/* ========================================
+   Service Grid Layout
+   ======================================== */
+
+.service-grid {
+  display: grid;
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+/* Modern grid with adaptive columns */
+.service-grid-modern {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Responsive breakpoints */
+@media (min-width: 768px) {
+  .service-grid-modern {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-grid-modern {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+  }
+}
+
+/* ========================================
+   Service Card Base Styles
+   ======================================== */
+
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  
+  /* Glassmorphism effect */
+  background: linear-gradient(
+    165deg,
+    rgba(15, 22, 33, 0.7),
+    rgba(10, 15, 22, 0.5)
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  /* Border with subtle gradient */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  
+  /* 3D transform setup */
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  
+  /* Smooth transitions */
+  transition: 
+    transform var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    background var(--transition-base);
+  
+  /* Performance optimization */
+  will-change: transform;
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(10px)) {
+  .service-card {
+    background: linear-gradient(
+      165deg,
+      rgba(15, 22, 33, 0.95),
+      rgba(10, 15, 22, 0.9)
+    );
+  }
+}
+
+/* ========================================
+   Card Content Styles
+   ======================================== */
+
+/* Service card icon */
+.service-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-2xl);
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    135deg,
+    rgba(55, 208, 190, 0.1),
+    rgba(116, 229, 255, 0.05)
+  );
+  border: 1px solid rgba(55, 208, 190, 0.2);
+  transition: all var(--transition-base);
+}
+
+.service-card-icon-default {
+  color: var(--color-brand-primary);
+}
+
+.service-card:hover .service-card-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(55, 208, 190, 0.2),
+    rgba(116, 229, 255, 0.1)
+  );
+  border-color: rgba(55, 208, 190, 0.4);
+  transform: scale(1.05) rotate(5deg);
+}
+
+.service-card h3 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  margin: 0;
+  
+  /* Gradient text effect on hover */
+  transition: background var(--transition-base);
+}
+
+.service-card p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Service card materials */
+.service-card-materials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.service-card-material,
+.service-card-material-more {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.service-card-material-more {
+  color: var(--color-brand-primary);
+  border-color: rgba(55, 208, 190, 0.2);
+}
+
+.service-card:hover .service-card-material {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary);
+}
+
+.service-card a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-brand-primary);
+  text-decoration: none;
+  
+  transition: 
+    color var(--transition-fast),
+    gap var(--transition-fast);
+}
+
+.service-card a::after {
+  content: '→';
+  font-size: var(--font-size-lg);
+  transition: transform var(--transition-fast);
+}
+
+/* ========================================
+   3D Tilt Hover Effects
+   ======================================== */
+
+.service-card:hover {
+  /* Lift effect */
+  transform: 
+    perspective(1000px) 
+    rotateX(var(--tilt-x, 0deg)) 
+    rotateY(var(--tilt-y, 0deg))
+    translateY(-8px)
+    scale(1.02);
+  
+  /* Enhanced border glow */
+  border-color: rgba(55, 208, 190, 0.3);
+  
+  /* Enhanced shadow */
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(55, 208, 190, 0.1) inset,
+    0 0 40px rgba(55, 208, 190, 0.1);
+  
+  /* Subtle background shift */
+  background: linear-gradient(
+    165deg,
+    rgba(15, 22, 33, 0.8),
+    rgba(10, 15, 22, 0.6)
+  );
+}
+
+.service-card:hover h3 {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.service-card:hover a {
+  color: var(--color-brand-secondary);
+  gap: var(--space-md);
+}
+
+.service-card:hover a::after {
+  transform: translateX(4px);
+}
+
+/* ========================================
+   Shine Effect Overlay
+   ======================================== */
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(55, 208, 190, 0.08),
+    transparent 40%
+  );
+  
+  border-radius: var(--radius-lg);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+/* Ensure content is above the shine effect */
+.service-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ========================================
+   Scroll Reveal Animation
+   ======================================== */
+
+/* Service cards with reveal animation */
+.service-card {
+  opacity: 0;
+  transform: perspective(1000px) translateY(30px);
+  animation: none;
+}
+
+.service-card.is-visible,
+.service-card.reveal-visible {
+  opacity: 1;
+  animation: cardReveal 0.6s ease forwards;
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) translateY(30px) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1000px) translateY(0) rotateX(0deg);
+  }
+}
+
+/* Staggered animation delay for multiple cards */
+.service-card:nth-child(1) { animation-delay: 0ms; }
+.service-card:nth-child(2) { animation-delay: 100ms; }
+.service-card:nth-child(3) { animation-delay: 200ms; }
+.service-card:nth-child(4) { animation-delay: 300ms; }
+.service-card:nth-child(5) { animation-delay: 400ms; }
+.service-card:nth-child(6) { animation-delay: 500ms; }
+.service-card:nth-child(7) { animation-delay: 600ms; }
+.service-card:nth-child(8) { animation-delay: 700ms; }
+.service-card:nth-child(9) { animation-delay: 800ms; }
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+.service-card:nth-child(6) { animation-delay: 500ms; }
+
+/* ========================================
+   Active/Focus States
+   ======================================== */
+
+.service-card:active {
+  transform: 
+    perspective(1000px) 
+    rotateX(var(--tilt-x, 0deg)) 
+    rotateY(var(--tilt-y, 0deg))
+    translateY(-4px)
+    scale(0.98);
+}
+
+.service-card:focus-within {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 4px;
+  border-color: rgba(55, 208, 190, 0.5);
+}
+
+/* ========================================
+   Reduced Motion Support
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    transition: none;
+    animation: none;
+    transform: none;
+  }
+  
+  .service-card:hover {
+    transform: none;
+  }
+  
+  .service-card.is-visible {
+    opacity: 1;
+    animation: none;
+  }
+  
+  .service-card::before {
+    display: none;
+  }
+}
+
+/* ========================================
+   Mobile Optimizations
+   ======================================== */
+
+@media (max-width: 767px) {
+  .service-card {
+    padding: var(--space-lg);
+  }
+  
+  /* Reduce 3D effects on mobile for better performance */
+  .service-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+  
+  /* Simplify shine effect on mobile */
+  .service-card::before {
+    display: none;
+  }
+}
+
+/* ========================================
+   Touch Device Optimizations
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  .service-card:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+    background: linear-gradient(
+      165deg,
+      rgba(15, 22, 33, 0.7),
+      rgba(10, 15, 22, 0.5)
+    );
+  }
+  
+  /* Apply effects on tap/active instead */
+  .service-card:active {
+    transform: scale(0.98);
+    border-color: rgba(55, 208, 190, 0.3);
+  }
+}

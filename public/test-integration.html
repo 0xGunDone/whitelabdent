@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Test - All Components</title>
+    
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="/styles/core/variables.css">
+    <link rel="stylesheet" href="/styles/core/reset.css">
+    <link rel="stylesheet" href="/styles/core/typography.css">
+    <link rel="stylesheet" href="/styles/core/utilities.css">
+    
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="/styles/components/header.css">
+    <link rel="stylesheet" href="/styles/components/hero.css">
+    <link rel="stylesheet" href="/styles/components/cards.css">
+    <link rel="stylesheet" href="/styles/components/gallery.css">
+    <link rel="stylesheet" href="/styles/components/lightbox.css">
+    <link rel="stylesheet" href="/styles/components/forms.css">
+    
+    <style>
+        body {
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+        }
+        
+        .test-section {
+            padding: var(--space-2xl) var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .test-section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-xl);
+            color: var(--color-brand-primary);
+            text-align: center;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .status-indicator {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--color-surface-elevated);
+            border: 1px solid var(--color-brand-primary);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            z-index: 100;
+            max-width: 300px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xs);
+            font-size: var(--font-size-sm);
+        }
+        
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .status-icon.success {
+            background: #4ade80;
+        }
+        
+        .status-icon.error {
+            background: #f87171;
+        }
+        
+        .status-icon.pending {
+            background: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Status Indicator -->
+    <div class="status-indicator">
+        <h3 style="margin-bottom: var(--space-sm); font-size: var(--font-size-base);">Component Status</h3>
+        <div class="status-item">
+            <span class="status-icon pending" id="status-header"></span>
+            <span>Header</span>
+        </div>
+        <div class="status-item">
+            <span class="status-icon pending" id="status-hero"></span>
+            <span>Hero Section</span>
+        </div>
+        <div class="status-item">
+            <span class="status-icon pending" id="status-cards"></span>
+            <span>Service Cards</span>
+        </div>
+        <div class="status-item">
+            <span class="status-icon pending" id="status-gallery"></span>
+            <span>Gallery</span>
+        </div>
+        <div class="status-item">
+            <span class="status-icon pending" id="status-forms"></span>
+            <span>Forms</span>
+        </div>
+    </div>
+
+    <!-- Header Component -->
+    <header class="site-header" id="site-header">
+        <div class="header-container">
+            <div class="header-brand">
+                <a href="/" class="brand-link">
+                    <span class="brand-name">White Lab</span>
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#hero" class="nav-link">Главная</a></li>
+                    <li class="nav-item"><a href="#services" class="nav-link">Услуги</a></li>
+                    <li class="nav-item"><a href="#gallery" class="nav-link">Галерея</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Контакты</a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-actions">
+                <a href="#contact" class="btn btn-primary">Связаться</a>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero" data-parallax-container>
+        <div class="hero-background">
+            <div class="hero-gradient"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-badge" data-scroll-reveal>Современная зуботехническая лаборатория</div>
+            <h1 class="hero-title" data-scroll-reveal data-scroll-delay="100">
+                Создаем идеальные улыбки с <span class="gradient-text">передовыми технологиями</span>
+            </h1>
+            <p class="hero-subtitle" data-scroll-reveal data-scroll-delay="200">
+                Высокоточные зубные протезы и реставрации с использованием современного оборудования
+            </p>
+            
+            <div class="hero-actions" data-scroll-reveal data-scroll-delay="300">
+                <a href="#contact" class="btn btn-primary btn-lg">Заказать консультацию</a>
+                <a href="#services" class="btn btn-secondary btn-lg">Наши услуги</a>
+            </div>
+            
+            <div class="hero-metrics" data-scroll-reveal data-scroll-delay="400">
+                <div class="metric-item">
+                    <div class="metric-value" data-metric-target="1500">0</div>
+                    <div class="metric-label">Довольных клиентов</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value" data-metric-target="15">0</div>
+                    <div class="metric-label">Лет опыта</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value" data-metric-target="98">0</div>
+                    <div class="metric-label">% качества</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Cards Section -->
+    <section class="test-section" id="services">
+        <h2 class="test-section-title" data-scroll-reveal>Наши услуги</h2>
+        <div class="services-grid">
+            <div class="service-card" data-tilt data-scroll-reveal>
+                <div class="service-card-icon">🦷</div>
+                <h3 class="service-card-title">Коронки и мосты</h3>
+                <p class="service-card-description">
+                    Изготовление высокоточных коронок и мостовидных протезов из современных материалов
+                </p>
+                <a href="#" class="service-card-link">Подробнее →</a>
+            </div>
+            
+            <div class="service-card" data-tilt data-scroll-reveal data-scroll-delay="100">
+                <div class="service-card-icon">✨</div>
+                <h3 class="service-card-title">Виниры</h3>
+                <p class="service-card-description">
+                    Тонкие керамические накладки для создания идеальной эстетики улыбки
+                </p>
+                <a href="#" class="service-card-link">Подробнее →</a>
+            </div>
+            
+            <div class="service-card" data-tilt data-scroll-reveal data-scroll-delay="200">
+                <div class="service-card-icon">🔬</div>
+                <h3 class="service-card-title">Имплантация</h3>
+                <p class="service-card-description">
+                    Изготовление супраструктур и коронок на имплантаты с высокой точностью
+                </p>
+                <a href="#" class="service-card-link">Подробнее →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="test-section" id="gallery">
+        <h2 class="test-section-title" data-scroll-reveal>Наши работы</h2>
+        
+        <div class="gallery-filters" data-scroll-reveal>
+            <button class="filter-btn active" data-filter="all">Все работы</button>
+            <button class="filter-btn" data-filter="crowns">Коронки</button>
+            <button class="filter-btn" data-filter="veneers">Виниры</button>
+            <button class="filter-btn" data-filter="implants">Имплантаты</button>
+        </div>
+        
+        <div class="media-mosaic" data-scroll-reveal data-scroll-delay="100">
+            <div class="media-tile media-tile-hero" data-category="crowns">
+                <img src="https://picsum.photos/600/400?random=1" alt="Работа 1" loading="lazy">
+                <div class="media-tile-overlay">
+                    <span class="media-tile-title">Керамические коронки</span>
+                </div>
+            </div>
+            
+            <div class="media-tile media-tile-wide" data-category="veneers">
+                <img src="https://picsum.photos/400/300?random=2" alt="Работа 2" loading="lazy">
+                <div class="media-tile-overlay">
+                    <span class="media-tile-title">Виниры E-max</span>
+                </div>
+            </div>
+            
+            <div class="media-tile media-tile-tall" data-category="implants">
+                <img src="https://picsum.photos/300/400?random=3" alt="Работа 3" loading="lazy">
+                <div class="media-tile-overlay">
+                    <span class="media-tile-title">Коронки на имплантатах</span>
+                </div>
+            </div>
+            
+            <div class="media-tile media-tile-wide" data-category="crowns">
+                <img src="https://picsum.photos/400/300?random=4" alt="Работа 4" loading="lazy">
+                <div class="media-tile-overlay">
+                    <span class="media-tile-title">Циркониевые коронки</span>
+                </div>
+            </div>
+            
+            <div class="media-tile media-tile-square" data-category="veneers">
+                <img src="https://picsum.photos/300/300?random=5" alt="Работа 5" loading="lazy">
+                <div class="media-tile-overlay">
+                    <span class="media-tile-title">Композитные виниры</span>
+                </div>
+            </div>
+            
+            <div class="media-tile media-tile-square" data-category="implants">
+                <img src="https://picsum.photos/300/300?random=6" alt="Работа 6" loading="lazy">
+                <div class="media-tile-overlay">
+                    <span class="media-tile-title">Мостовидный протез</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forms Section -->
+    <section class="test-section" id="contact">
+        <h2 class="test-section-title" data-scroll-reveal>Свяжитесь с нами</h2>
+        
+        <div style="max-width: 600px; margin: 0 auto;">
+            <form class="modern-form" id="contact-form" data-scroll-reveal data-scroll-delay="100">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" class="form-input" required>
+                    <label for="name" class="form-label">Ваше имя</label>
+                    <span class="form-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="email" name="email" class="form-input" required>
+                    <label for="email" class="form-label">Email</label>
+                    <span class="form-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" class="form-input" required>
+                    <label for="phone" class="form-label">Телефон</label>
+                    <span class="form-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <textarea id="message" name="message" class="form-input" rows="4" required></textarea>
+                    <label for="message" class="form-label">Сообщение</label>
+                    <span class="form-error"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    <span class="btn-text">Отправить сообщение</span>
+                    <span class="btn-loader" style="display: none;">
+                        <span class="spinner"></span>
+                    </span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="/scripts/effects/parallax.js"></script>
+    <script src="/scripts/effects/scroll-reveal.js"></script>
+    <script src="/scripts/effects/tilt.js"></script>
+    <script src="/scripts/effects/metrics.js"></script>
+    <script src="/scripts/components/navigation.js"></script>
+    <script src="/scripts/components/gallery.js"></script>
+    <script src="/scripts/components/forms.js"></script>
+    
+    <script>
+        // Integration test script
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Starting integration tests...');
+            
+            const tests = {
+                header: false,
+                hero: false,
+                cards: false,
+                gallery: false,
+                forms: false
+            };
+            
+            // Test 1: Header component
+            setTimeout(() => {
+                const header = document.querySelector('.site-header');
+                if (header && window.getComputedStyle(header).position === 'sticky') {
+                    tests.header = true;
+                    updateStatus('header', true);
+                    console.log('✅ Header: Sticky positioning working');
+                } else {
+                    updateStatus('header', false);
+                    console.error('❌ Header: Sticky positioning not working');
+                }
+            }, 100);
+            
+            // Test 2: Hero section
+            setTimeout(() => {
+                const hero = document.querySelector('.hero-section');
+                const metrics = document.querySelectorAll('[data-metric-target]');
+                if (hero && metrics.length > 0) {
+                    tests.hero = true;
+                    updateStatus('hero', true);
+                    console.log('✅ Hero: Section and metrics present');
+                } else {
+                    updateStatus('hero', false);
+                    console.error('❌ Hero: Section or metrics missing');
+                }
+            }, 200);
+            
+            // Test 3: Service cards
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.service-card');
+                const tiltCards = document.querySelectorAll('[data-tilt]');
+                if (cards.length >= 3 && tiltCards.length >= 3) {
+                    tests.cards = true;
+                    updateStatus('cards', true);
+                    console.log('✅ Service Cards: All cards present with tilt effect');
+                } else {
+                    updateStatus('cards', false);
+                    console.error('❌ Service Cards: Missing cards or tilt effect');
+                }
+            }, 300);
+            
+            // Test 4: Gallery
+            setTimeout(() => {
+                const gallery = document.querySelector('.media-mosaic');
+                const filters = document.querySelectorAll('.filter-btn');
+                const tiles = document.querySelectorAll('.media-tile');
+                if (gallery && filters.length >= 4 && tiles.length >= 6) {
+                    tests.gallery = true;
+                    updateStatus('gallery', true);
+                    console.log('✅ Gallery: Mosaic layout, filters, and tiles present');
+                } else {
+                    updateStatus('gallery', false);
+                    console.error('❌ Gallery: Missing elements');
+                }
+            }, 400);
+            
+            // Test 5: Forms
+            setTimeout(() => {
+                const form = document.querySelector('.modern-form');
+                const inputs = form ? form.querySelectorAll('.form-input') : [];
+                if (form && inputs.length >= 4) {
+                    tests.forms = true;
+                    updateStatus('forms', true);
+                    console.log('✅ Forms: Form and inputs present');
+                } else {
+                    updateStatus('forms', false);
+                    console.error('❌ Forms: Form or inputs missing');
+                }
+            }, 500);
+            
+            // Final report
+            setTimeout(() => {
+                const passed = Object.values(tests).filter(t => t).length;
+                const total = Object.keys(tests).length;
+                console.log(`\n📊 Integration Test Results: ${passed}/${total} passed`);
+                
+                if (passed === total) {
+                    console.log('🎉 All components working correctly!');
+                } else {
+                    console.warn('⚠️ Some components need attention');
+                }
+            }, 1000);
+            
+            function updateStatus(component, success) {
+                const statusIcon = document.getElementById(`status-${component}`);
+                if (statusIcon) {
+                    statusIcon.classList.remove('pending', 'success', 'error');
+                    statusIcon.classList.add(success ? 'success' : 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

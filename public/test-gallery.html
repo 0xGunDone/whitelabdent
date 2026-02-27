@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery Component Test - White Lab</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="/styles/core/variables.css">
+  <link rel="stylesheet" href="/styles/core/reset.css">
+  <link rel="stylesheet" href="/styles/core/typography.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="/styles/components/gallery.css">
+  <link rel="stylesheet" href="/styles/components/lightbox.css">
+  
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      padding: var(--space-2xl);
+      min-height: 100vh;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+    
+    .test-header h1 {
+      font-size: var(--font-size-3xl);
+      margin-bottom: var(--space-md);
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="test-header">
+      <h1>Gallery Component Test</h1>
+      <p>Testing filter, lazy loading, and lightbox functionality</p>
+    </header>
+
+    <section class="media-cinema">
+      <!-- Animated Background -->
+      <div class="media-cinema-backdrop">
+        <div class="cinema-orb cinema-orb-a"></div>
+        <div class="cinema-orb cinema-orb-b"></div>
+      </div>
+
+      <!-- Filter Toolbar -->
+      <div class="media-toolbar">
+        <button class="media-filter active" data-filter="all">Все</button>
+        <button class="media-filter" data-filter="crowns">Коронки</button>
+        <button class="media-filter" data-filter="veneers">Виниры</button>
+        <button class="media-filter" data-filter="implants">Импланты</button>
+      </div>
+
+      <!-- Media Grid -->
+      <div class="media-mosaic">
+        <!-- Hero Tile -->
+        <figure class="media-tile media-tile-hero media-tile-shape-a" data-category="crowns">
+          <img 
+            src="https://picsum.photos/800/600?random=1" 
+            alt="Коронки образец 1"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Коронки</span>
+            <small>E-Max</small>
+          </figcaption>
+        </figure>
+
+        <!-- Wide Tile -->
+        <figure class="media-tile media-tile-wide media-tile-shape-b" data-category="veneers">
+          <img 
+            src="https://picsum.photos/600/450?random=2" 
+            alt="Виниры образец 1"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Виниры</span>
+            <small>Керамика</small>
+          </figcaption>
+        </figure>
+
+        <!-- Tall Tile -->
+        <figure class="media-tile media-tile-tall media-tile-shape-c" data-category="implants">
+          <img 
+            src="https://picsum.photos/450/600?random=3" 
+            alt="Импланты образец 1"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Импланты</span>
+            <small>Титан</small>
+          </figcaption>
+        </figure>
+
+        <!-- Mini Tile -->
+        <figure class="media-tile media-tile-mini media-tile-shape-d" data-category="crowns">
+          <img 
+            src="https://picsum.photos/450/300?random=4" 
+            alt="Коронки образец 2"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Коронки</span>
+            <small>Цирконий</small>
+          </figcaption>
+        </figure>
+
+        <!-- Wide Tile -->
+        <figure class="media-tile media-tile-wide media-tile-shape-e" data-category="veneers">
+          <img 
+            src="https://picsum.photos/600/450?random=5" 
+            alt="Виниры образец 2"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Виниры</span>
+            <small>Композит</small>
+          </figcaption>
+        </figure>
+
+        <!-- Tall Tile -->
+        <figure class="media-tile media-tile-tall media-tile-shape-f" data-category="crowns">
+          <img 
+            src="https://picsum.photos/450/600?random=6" 
+            alt="Коронки образец 3"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Коронки</span>
+            <small>Металлокерамика</small>
+          </figcaption>
+        </figure>
+
+        <!-- Mini Tile -->
+        <figure class="media-tile media-tile-mini media-tile-shape-a" data-category="implants">
+          <img 
+            src="https://picsum.photos/450/300?random=7" 
+            alt="Импланты образец 2"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Импланты</span>
+            <small>Керамика</small>
+          </figcaption>
+        </figure>
+
+        <!-- Hero Tile -->
+        <figure class="media-tile media-tile-hero media-tile-shape-b" data-category="veneers">
+          <img 
+            src="https://picsum.photos/800/600?random=8" 
+            alt="Виниры образец 3"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Виниры</span>
+            <small>E-Max</small>
+          </figcaption>
+        </figure>
+
+        <!-- Wide Tile -->
+        <figure class="media-tile media-tile-wide media-tile-shape-c" data-category="crowns">
+          <img 
+            src="https://picsum.photos/600/450?random=9" 
+            alt="Коронки образец 4"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Коронки</span>
+            <small>Пресс-керамика</small>
+          </figcaption>
+        </figure>
+
+        <!-- Mini Tile -->
+        <figure class="media-tile media-tile-mini media-tile-shape-d" data-category="implants">
+          <img 
+            src="https://picsum.photos/450/300?random=10" 
+            alt="Импланты образец 3"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Импланты</span>
+            <small>Цирконий</small>
+          </figcaption>
+        </figure>
+
+        <!-- Tall Tile -->
+        <figure class="media-tile media-tile-tall media-tile-shape-e" data-category="veneers">
+          <img 
+            src="https://picsum.photos/450/600?random=11" 
+            alt="Виниры образец 4"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Виниры</span>
+            <small>Ультратонкие</small>
+          </figcaption>
+        </figure>
+
+        <!-- Mini Tile -->
+        <figure class="media-tile media-tile-mini media-tile-shape-f" data-category="crowns">
+          <img 
+            src="https://picsum.photos/450/300?random=12" 
+            alt="Коронки образец 5"
+            loading="lazy"
+          >
+          <figcaption>
+            <span>Коронки</span>
+            <small>Временные</small>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  </div>
+
+  <!-- Gallery Script -->
+  <script src="/scripts/components/gallery.js"></script>
+
+  <!-- Test Console -->
+  <script>
+    // Log gallery initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('Gallery test page loaded');
+      
+      // Check if gallery initialized
+      setTimeout(() => {
+        if (window.MediaGallery) {
+          console.log('✓ Gallery initialized successfully');
+          console.log('Gallery instances:', window.MediaGallery.instances.length);
+        } else {
+          console.error('✗ Gallery failed to initialize');
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

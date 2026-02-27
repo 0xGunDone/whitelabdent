@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+  <%- include('partials/head') %>
+  <body>
+    <div class="bg-noise" aria-hidden="true"></div>
+    <%- include('partials/header') %>
+
+    <main>
+      <% if (!service) { %>
+        <!-- Service Not Found -->
+        <section class="section service-layout">
+          <div class="container">
+            <article class="service-page">
+              <p class="badge">White Lab / Услуги</p>
+              <h1>Услуга не найдена</h1>
+              <p class="service-lead">Вернитесь на главную и выберите нужное направление.</p>
+              <a class="btn btn-primary" href="/">На главную</a>
+            </article>
+          </div>
+        </section>
+      <% } else { %>
+        <!-- Service Hero Section (Requirement 18.1) -->
+        <section class="hero hero-service" id="service-hero">
+          <div class="container">
+            <div class="hero-scene">
+              <!-- Ambient background elements with parallax -->
+              <span class="hero-ambient hero-ambient-a" data-parallax-speed="0.14" aria-hidden="true"></span>
+              <span class="hero-ambient hero-ambient-b" data-parallax-speed="-0.1" aria-hidden="true"></span>
+              <span class="hero-ambient hero-ambient-c" data-parallax-speed="0.07" aria-hidden="true"></span>
+              <span class="hero-gridline" aria-hidden="true"></span>
+
+              <!-- Breadcrumbs with animation (Requirement 18.5) -->
+              <nav class="breadcrumbs" aria-label="Навигация по сайту" data-reveal data-reveal-direction="down">
+                <ol class="breadcrumbs-list">
+                  <li class="breadcrumbs-item">
+                    <a href="/" class="breadcrumbs-link">Главная</a>
+                  </li>
+                  <li class="breadcrumbs-separator" aria-hidden="true">/</li>
+                  <li class="breadcrumbs-item">
+                    <a href="/#services" class="breadcrumbs-link">Услуги</a>
+                  </li>
+                  <li class="breadcrumbs-separator" aria-hidden="true">/</li>
+                  <li class="breadcrumbs-item breadcrumbs-item-current">
+                    <span class="breadcrumbs-current" aria-current="page"><%= service.title %></span>
+                  </li>
+                </ol>
+              </nav>
+
+              <!-- Service Hero Content -->
+              <article class="hero-content-service">
+                <div class="hero-badge-wrapper" data-reveal data-reveal-direction="up">
+                  <span class="hero-badge">White Lab / Услуги</span>
+                </div>
+
+                <h1 class="hero-title-service" data-reveal data-reveal-direction="up">
+                  <%= service.title %>
+                </h1>
+
+                <p class="hero-subtitle-service" data-reveal data-reveal-direction="up">
+                  <%= service.short %>
+                </p>
+
+                <p class="hero-description-service" data-reveal data-reveal-direction="up">
+                  <%= service.description %>
+                </p>
+
+                <!-- Service Materials Tags -->
+                <% if (service.materials && service.materials.length > 0) { %>
+                  <div class="service-materials" data-reveal data-reveal-direction="up">
+                    <% for (const material of service.materials) { %>
+                      <span class="service-material-tag"><%= material %></span>
+                    <% } %>
+                  </div>
+                <% } %>
+
+                <!-- CTA Buttons -->
+                <div class="hero-actions" data-reveal data-reveal-direction="up">
+                  <a class="btn btn-primary" href="tel:<%= site?.brand?.phoneValue || '' %>" aria-label="Позвонить в лабораторию">
+                    Связаться с лабораторией
+                  </a>
+                  <a class="btn btn-secondary" href="<%= site?.brand?.instagram || '#' %>" target="_blank" rel="noopener noreferrer" aria-label="Перейти в Инстаграм">
+                    Инстаграм
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <% if (serviceMedia && serviceMedia.length > 0) { %>
+          <section class="section service-media-section">
+            <div class="container">
+              <div class="section-head section-head-tight" data-reveal data-reveal-direction="up">
+                <h2>Медиа по услуге</h2>
+                <p class="section-subtitle">Примеры и визуальные материалы, привязанные к этой странице услуги.</p>
+              </div>
+              <div class="service-media-grid">
+                <% for (const item of serviceMedia) { %>
+                  <figure class="service-media-item" data-reveal data-reveal-direction="up">
+                    <% if (item.type === 'video') { %>
+                      <video controls preload="metadata">
+                        <source src="<%= item.localOptimized %>" type="video/mp4" />
+                      </video>
+                    <% } else { %>
+                      <img src="<%= item.localOptimized %>" alt="<%= item.alt || item.title %>" loading="lazy" />
+                    <% } %>
+                    <% if (item.title) { %>
+                      <figcaption><%= item.title %></figcaption>
+                    <% } %>
+                  </figure>
+                <% } %>
+              </div>
+            </div>
+          </section>
+        <% } %>
+
+        <!-- Related Services Section (Requirement 18.2) -->
+        <% if (related && related.length > 0) { %>
+          <section class="section section-related-services">
+            <div class="container">
+              <div class="section-head section-head-tight" data-reveal data-reveal-direction="up">
+                <h2>Другие услуги</h2>
+                <p class="section-subtitle">Изучите наши дополнительные направления</p>
+              </div>
+              
+              <div class="service-grid service-grid-modern">
+                <% for (const item of related) { %>
+                  <%- include('components/service-card', { service: item }) %>
+                <% } %>
+              </div>
+            </div>
+          </section>
+        <% } %>
+      <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="/scripts/components/navigation.js"></script>
+    <script src="/scripts/effects/scroll-reveal.js"></script>
+    <script src="/scripts/effects/tilt.js"></script>
+    <script src="/scripts/effects/parallax.js"></script>
+  </body>
+</html>

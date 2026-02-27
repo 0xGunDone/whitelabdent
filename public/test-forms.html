@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forms Component Test - White Lab</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="/styles/core/variables.css">
+  <link rel="stylesheet" href="/styles/core/reset.css">
+  <link rel="stylesheet" href="/styles/core/typography.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="/styles/components/forms.css">
+  
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      padding: var(--space-2xl);
+      min-height: 100vh;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      margin-bottom: var(--space-2xl);
+      padding: var(--space-xl);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .test-section h2 {
+      margin-bottom: var(--space-lg);
+      color: var(--color-brand-primary);
+      font-size: var(--font-size-2xl);
+    }
+    
+    .test-section h3 {
+      margin-top: var(--space-xl);
+      margin-bottom: var(--space-md);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-lg);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-xl);
+      margin-top: var(--space-lg);
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      padding: var(--space-xs) var(--space-sm);
+      background: rgba(55, 208, 190, 0.1);
+      color: var(--color-brand-primary);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+      margin-left: var(--space-sm);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1 style="margin-bottom: var(--space-2xl); font-size: var(--font-size-4xl);">
+      Forms Component Test
+      <span class="status-indicator">Requirements 11.1, 11.2, 11.4</span>
+    </h1>
+    
+    <!-- Floating Labels Test -->
+    <section class="test-section">
+      <h2>1. Floating Labels (Requirement 11.1)</h2>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-lg);">
+        Labels should float up when input is focused or has value
+      </p>
+      
+      <form class="form-modern">
+        <div class="form-field">
+          <input type="text" id="name" class="form-input" placeholder="Введите ваше имя">
+          <label for="name" class="form-label">Имя</label>
+        </div>
+        
+        <div class="form-field">
+          <input type="email" id="email" class="form-input" placeholder="example@mail.com">
+          <label for="email" class="form-label">Email</label>
+        </div>
+        
+        <div class="form-field">
+          <input type="tel" id="phone" class="form-input" placeholder="+7 (999) 123-45-67">
+          <label for="phone" class="form-label">Телефон</label>
+        </div>
+        
+        <div class="form-field">
+          <textarea id="message" class="form-textarea" placeholder="Ваше сообщение"></textarea>
+          <label for="message" class="form-label">Сообщение</label>
+        </div>
+      </form>
+    </section>
+    
+    <!-- Validation States Test -->
+    <section class="test-section">
+      <h2>2. Validation States (Requirement 11.2)</h2>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-lg);">
+        Visual feedback for valid and invalid states
+      </p>
+      
+      <div class="demo-grid">
+        <div>
+          <h3>Valid State</h3>
+          <form class="form-modern">
+            <div class="form-field is-valid">
+              <input type="email" id="valid-email" class="form-input" value="user@example.com" placeholder="Email">
+              <label for="valid-email" class="form-label">Email</label>
+              <span class="form-validation-icon">✓</span>
+              <span class="form-validation-message">Email корректен</span>
+            </div>
+            
+            <div class="form-field is-valid">
+              <input type="tel" id="valid-phone" class="form-input" value="+7 (999) 123-45-67" placeholder="Телефон">
+              <label for="valid-phone" class="form-label">Телефон</label>
+              <span class="form-validation-icon">✓</span>
+              <span class="form-validation-message">Телефон корректен</span>
+            </div>
+          </form>
+        </div>
+        
+        <div>
+          <h3>Invalid State</h3>
+          <form class="form-modern">
+            <div class="form-field is-invalid">
+              <input type="email" id="invalid-email" class="form-input" value="invalid-email" placeholder="Email">
+              <label for="invalid-email" class="form-label">Email</label>
+              <span class="form-validation-icon">✕</span>
+              <span class="form-validation-message">Введите корректный email</span>
+            </div>
+            
+            <div class="form-field is-invalid">
+              <input type="tel" id="invalid-phone" class="form-input" value="123" placeholder="Телефон">
+              <label for="invalid-phone" class="form-label">Телефон</label>
+              <span class="form-validation-icon">✕</span>
+              <span class="form-validation-message">Телефон должен содержать минимум 10 цифр</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ripple Effect Test -->
+    <section class="test-section">
+      <h2>3. Ripple Effect for Buttons (Requirement 11.4)</h2>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-lg);">
+        Click buttons to see ripple animation
+      </p>
+      
+      <div class="form-actions">
+        <button type="button" class="form-button" id="ripple-btn-1">
+          Primary Button
+        </button>
+        
+        <button type="button" class="form-button-secondary" id="ripple-btn-2">
+          Secondary Button
+        </button>
+        
+        <button type="button" class="form-button-outline" id="ripple-btn-3">
+          Outline Button
+        </button>
+      </div>
+      
+      <h3>Button States</h3>
+      <div class="form-actions">
+        <button type="button" class="form-button">
+          Normal
+        </button>
+        
+        <button type="button" class="form-button is-loading">
+          Loading
+        </button>
+        
+        <button type="button" class="form-button" disabled>
+          Disabled
+        </button>
+      </div>
+    </section>
+    
+    <!-- Complete Form Example -->
+    <section class="test-section">
+      <h2>4. Complete Form Example</h2>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-lg);">
+        Interactive form with real-time validation
+      </p>
+      
+      <form class="form-modern" id="contact-form">
+        <div class="form-grid-2">
+          <div class="form-field">
+            <input type="text" id="full-name" class="form-input" placeholder="Ваше имя" required>
+            <label for="full-name" class="form-label">Имя *</label>
+            <span class="form-validation-icon"></span>
+            <span class="form-validation-message"></span>
+          </div>
+          
+          <div class="form-field">
+            <input type="email" id="contact-email" class="form-input" placeholder="example@mail.com" required>
+            <label for="contact-email" class="form-label">Email *</label>
+            <span class="form-validation-icon"></span>
+            <span class="form-validation-message"></span>
+          </div>
+        </div>
+        
+        <div class="form-field">
+          <input type="tel" id="contact-phone" class="form-input" placeholder="+7 (999) 123-45-67" required>
+          <label for="contact-phone" class="form-label">Телефон *</label>
+          <span class="form-validation-icon"></span>
+          <span class="form-validation-message"></span>
+        </div>
+        
+        <div class="form-field">
+          <textarea id="contact-message" class="form-textarea" placeholder="Ваше сообщение" required></textarea>
+          <label for="contact-message" class="form-label">Сообщение *</label>
+          <span class="form-validation-icon"></span>
+          <span class="form-validation-message"></span>
+        </div>
+        
+        <div class="form-checkbox">
+          <input type="checkbox" id="agree" required>
+          <label for="agree">Я согласен с политикой конфиденциальности *</label>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="form-button">
+            Отправить сообщение
+          </button>
+          <button type="reset" class="form-button-secondary">
+            Очистить
+          </button>
+        </div>
+      </form>
+    </section>
+    
+    <!-- Additional Form Elements -->
+    <section class="test-section">
+      <h2>5. Additional Form Elements</h2>
+      
+      <h3>Checkboxes</h3>
+      <div style="display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-xl);">
+        <div class="form-checkbox">
+          <input type="checkbox" id="check1" checked>
+          <label for="check1">Checked checkbox</label>
+        </div>
+        <div class="form-checkbox">
+          <input type="checkbox" id="check2">
+          <label for="check2">Unchecked checkbox</label>
+        </div>
+      </div>
+      
+      <h3>Radio Buttons</h3>
+      <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+        <div class="form-radio">
+          <input type="radio" id="radio1" name="radio-group" checked>
+          <label for="radio1">Option 1 (selected)</label>
+        </div>
+        <div class="form-radio">
+          <input type="radio" id="radio2" name="radio-group">
+          <label for="radio2">Option 2</label>
+        </div>
+        <div class="form-radio">
+          <input type="radio" id="radio3" name="radio-group">
+          <label for="radio3">Option 3</label>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- Forms Component Script -->
+  <script src="/scripts/components/forms.js"></script>
+  
+  <script>
+    // All form functionality is now handled by forms.js
+    // This includes:
+    // - Real-time validation (Requirement 11.3)
+    // - Validation state animations (Requirement 11.4)
+    // - Form submission animation (Requirement 11.5)
+    // - Ripple effects
+    // - Floating labels
+    
+    console.log('Forms component loaded. All forms are auto-initialized.');
+  </script>
+</body>
+</html>

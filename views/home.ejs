@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ru">
+  <%- include('partials/head') %>
+  <body>
+    <div class="bg-noise" aria-hidden="true"></div>
+    <%- include('partials/header') %>
+
+    <%
+      const faqItems = (site?.faq || []).slice(0, 5);
+      const mosaicPattern = ["hero", "wide", "tall", "mini", "wide", "mini", "tall", "wide", "mini", "hero"];
+      const tileShapePattern = ["shape-a", "shape-b", "shape-c", "shape-d", "shape-e", "shape-f"];
+      const sectionOrder = site?.sections?.order || ["services", "process", "materials", "about", "gallery", "contacts"];
+      const sectionOrderMap = sectionOrder.reduce((acc, key, index) => {
+        acc[key] = index + 1;
+        return acc;
+      }, {});
+      const processSteps = (site?.sections?.process?.steps || []).slice(0, 7);
+    %>
+
+    <%
+      // Prepare hero component props
+      locals.heroProps = {
+        badge: site?.hero?.badge || 'Цифровая зуботехническая лаборатория',
+        overline: 'Цифровая зуботехническая инженерия',
+        title: { outline: 'WHITE', solid: 'LAB' },
+        subtitle: site?.hero?.subtitle || '',
+        description: 'Точность инженерии, скорость производства и полный контроль результата на каждом этапе клинического кейса.',
+        primaryCTA: {
+          text: 'Запустить кейс',
+          href: `tel:${site?.brand?.phoneValue || ''}`
+        },
+        secondaryCTA: {
+          text: 'Инстаграм',
+          href: site?.brand?.instagram || '#'
+        },
+        media: {
+          type: heroVisual?.type || 'fallback',
+          src: heroVisual?.localOptimized || '',
+          poster: heroPoster?.localOptimized || '',
+          alt: heroVisual?.alt || ''
+        },
+        metrics: [
+          { label: 'Подписчики', value: site?.metrics?.instagramFollowers || 0, suffix: '+' },
+          { label: 'Публикации', value: site?.metrics?.instagramPosts || 0, suffix: '+' },
+          { label: 'Рейтинг', value: site?.metrics?.twoGisRating || 0 }
+        ],
+        signals: [
+          'CAD/CAM',
+          site?.brand?.city || 'Тверь',
+          site?.brand?.workHours || ''
+        ],
+        console: [
+          { label: 'Производственный слот', value: 'Открыт' },
+          { label: 'CAD-очередь', value: '07 активных' },
+          { label: 'Ответ', value: 'до 15 мин' }
+        ],
+        floatingCards: [
+          {
+            title: 'Локация',
+            subtitle: site?.brand?.city || 'Тверь',
+            description: site?.brand?.address || ''
+          },
+          {
+            title: 'Связь',
+            subtitle: site?.brand?.phoneDisplay || '',
+            description: 'Ответ в рабочем окне'
+          }
+        ],
+        runline: 'WHITE LAB · ЦИФРОВАЯ ЗУБОТЕХНИЧЕСКАЯ ЛАБОРАТОРИЯ · CAD/CAM ПРОТОКОЛ · E.MAX · ZrO2 · ТИТАН · PMMA · TRINIA · WHITE LAB ·',
+        trustStrip: [
+          '01 / ЦИФРОВОЙ ПРОТОКОЛ',
+          '02 / ПРЕМИАЛЬНЫЕ МАТЕРИАЛЫ',
+          '03 / КОНТРОЛЬ СРОКОВ',
+          '04 / КЛИНИЧЕСКАЯ ТОЧНОСТЬ'
+        ]
+      };
+    %>
+
+    <main class="landing">
+      <%- include('components/hero') %>
+
+      <section class="section studio studio-block" id="services" style="--section-order: <%= sectionOrderMap.services || 1 %>">
+        <div class="studio-backdrop" aria-hidden="true">
+          <span class="studio-orb studio-orb-a" data-parallax-speed="-0.06"></span>
+          <span class="studio-orb studio-orb-b" data-parallax-speed="0.09"></span>
+        </div>
+        <div class="container studio-stack">
+          <article class="studio-main studio-single" data-lift-card>
+            <div class="section-head section-head-tight" data-parallax-speed="0.03">
+              <h2><%= site?.sections?.services?.title || 'Услуги и производственный контур' %></h2>
+              <p><%= site?.sections?.services?.description || 'Компактная архитектура работ: от цифрового моделирования до финального контроля в едином цикле.' %></p>
+            </div>
+
+            <div class="service-grid service-grid-modern">
+              <% for (const service of (site?.services || []).slice(0, 6)) { %>
+                <%- include('components/service-card', { service }) %>
+              <% } %>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section studio studio-block section-process" id="process" style="--section-order: <%= sectionOrderMap.process || 2 %>">
+        <div class="studio-backdrop" aria-hidden="true">
+          <span class="studio-orb studio-orb-a" data-parallax-speed="-0.05"></span>
+          <span class="studio-orb studio-orb-b" data-parallax-speed="0.08"></span>
+        </div>
+        <div class="container studio-stack">
+          <article class="studio-main studio-single" data-lift-card>
+            <div class="section-head section-head-tight" data-parallax-speed="0.03">
+              <h2><%= site?.sections?.process?.title || 'Процесс' %></h2>
+              <p><%= site?.sections?.process?.description || 'Пять логических этапов с прозрачными контрольными точками, чтобы клиника и врач видели статус кейса в реальном времени.' %></p>
+            </div>
+
+            <div class="service-flow service-flow-expanded" data-parallax-speed="-0.02">
+              <% for (const [index, step] of processSteps.entries()) { %>
+                <article><span><%= String(index + 1).padStart(2, '0') %></span><p><%= step %></p></article>
+              <% } %>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section studio studio-block section-materials" id="materials" style="--section-order: <%= sectionOrderMap.materials || 3 %>">
+        <div class="studio-backdrop" aria-hidden="true">
+          <span class="studio-orb studio-orb-a" data-parallax-speed="-0.04"></span>
+          <span class="studio-orb studio-orb-b" data-parallax-speed="0.07"></span>
+        </div>
+        <div class="container studio-stack">
+          <article class="studio-side studio-single" data-lift-card>
+            <div class="section-head section-head-tight">
+              <h2><%= site?.sections?.materials?.title || 'Материалы' %></h2>
+              <p><%= site?.sections?.materials?.description || 'Используем только предсказуемые материалы и фиксируем их на каждом проекте до передачи кейса врачу.' %></p>
+            </div>
+
+            <div class="material-list material-list-grid">
+              <% for (const service of (site?.services || []).slice(0, 6)) { %>
+                <article>
+                  <strong><%= service.title %></strong>
+                  <p><%= (service.materials || []).join(' · ') %></p>
+                </article>
+              <% } %>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section studio studio-block section-about" id="about" style="--section-order: <%= sectionOrderMap.about || 4 %>">
+        <div class="studio-backdrop" aria-hidden="true">
+          <span class="studio-orb studio-orb-a" data-parallax-speed="-0.03"></span>
+          <span class="studio-orb studio-orb-b" data-parallax-speed="0.06"></span>
+        </div>
+        <div class="container studio-stack">
+          <article class="studio-side studio-single" data-lift-card>
+            <h3><%= site?.about?.title || 'О лаборатории' %></h3>
+            <p><%= site?.about?.text || '' %></p>
+
+            <div class="about-list">
+              <% for (const item of (site?.advantages || []).slice(0, 6)) { %>
+                <span><%= item %></span>
+              <% } %>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section media-cinema" id="gallery" style="--section-order: <%= sectionOrderMap.gallery || 5 %>">
+        <div class="container">
+          <div class="media-cinema-backdrop" aria-hidden="true">
+            <span class="cinema-orb cinema-orb-a" data-parallax-speed="-0.08"></span>
+            <span class="cinema-orb cinema-orb-b" data-parallax-speed="0.1"></span>
+          </div>
+          <div class="section-head section-head-tight" data-parallax-speed="0.03">
+            <h2><%= site?.sections?.gallery?.title || 'Медиатека' %></h2>
+            <p><%= site?.sections?.gallery?.description || 'Визуальный архив лаборатории: не каталог карточек, а единая сценография реальных работ.' %></p>
+          </div>
+
+          <div class="media-mosaic" data-media-grid>
+            <% for (const [index, item] of gallery.entries()) { %>
+              <figure
+                class="media-tile media-tile-<%= mosaicPattern[index % mosaicPattern.length] %> media-tile-<%= tileShapePattern[index % tileShapePattern.length] %>"
+                data-lift-card
+                style="--tile-delay: <%= (index % 6) * 0.17 %>s"
+              >
+                <img src="<%= item.localOptimized %>" alt="<%= item.alt %>" loading="lazy" />
+                <figcaption>
+                  <span><%= item.title || 'Медиа' %></span>
+                  <small>#<%= String(index + 1).padStart(2, '0') %></small>
+                </figcaption>
+              </figure>
+            <% } %>
+          </div>
+
+          <% if (reels.length) { %>
+            <div class="reel-strip">
+              <% for (const item of reels) { %>
+                <figure class="reel-item" data-lift-card>
+                  <video controls preload="metadata">
+                    <source src="<%= item.localOptimized %>" type="video/mp4" />
+                  </video>
+                </figure>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+      </section>
+
+      <section class="section finale" id="contacts" style="--section-order: <%= sectionOrderMap.contacts || 6 %>">
+        <div class="finale-backdrop" aria-hidden="true">
+          <span class="finale-orb finale-orb-a" data-parallax-speed="-0.05"></span>
+          <span class="finale-orb finale-orb-b" data-parallax-speed="0.08"></span>
+        </div>
+        <div class="container finale-grid">
+          <article class="finale-card contact-card" data-lift-card>
+            <h2><%= site?.sections?.contacts?.title || 'Контакты White Lab' %></h2>
+            <p><strong><%= site?.brand?.legalName || '' %></strong></p>
+            <p><%= site?.brand?.address || '' %>, <%= site?.brand?.city || '' %></p>
+            <p><%= site?.brand?.workHours || '' %></p>
+            <p><a href="tel:<%= site?.brand?.phoneValue || '' %>"><%= site?.brand?.phoneDisplay || '' %></a></p>
+            <p><a href="mailto:<%= site?.brand?.email || '' %>"><%= site?.brand?.email || '' %></a></p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="tel:<%= site?.brand?.phoneValue || '' %>">Позвонить</a>
+              <a class="btn btn-secondary" href="<%= site?.brand?.mapYandex || '#' %>" target="_blank" rel="noopener noreferrer">Маршрут</a>
+            </div>
+
+            <div class="contact-links">
+              <a href="<%= site?.brand?.instagram || '#' %>" target="_blank" rel="noopener noreferrer">Инстаграм</a>
+              <a href="<%= site?.brand?.map2gis || '#' %>" target="_blank" rel="noopener noreferrer">2GIS</a>
+              <a href="<%= site?.brand?.mapYandex || '#' %>" target="_blank" rel="noopener noreferrer">Яндекс Карты</a>
+            </div>
+          </article>
+
+          <article class="finale-card faq-card" id="faq" data-lift-card>
+            <h2>Вопросы и ответы</h2>
+            <div class="faq-list">
+              <% for (const item of faqItems) { %>
+                <details>
+                  <summary><%= item.q %></summary>
+                  <p><%= item.a %></p>
+                </details>
+              <% } %>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <div class="mobile-cta" aria-label="Быстрые действия">
+      <a href="tel:<%= site?.brand?.phoneValue || '' %>">Позвонить</a>
+      <a href="<%= site?.brand?.mapYandex || '#' %>" target="_blank" rel="noopener noreferrer">Маршрут</a>
+    </div>
+
+    <script type="application/ld+json"><%- JSON.stringify(structuredData) %></script>
+    <script src="/scripts/components/navigation.js"></script>
+    <script src="/scripts/effects/metrics.js"></script>
+    <script src="/scripts/effects/scroll-reveal.js"></script>
+    <script src="/scripts/effects/tilt.js"></script>
+    <script src="/scripts/site.js"></script>
+  </body>
+</html>

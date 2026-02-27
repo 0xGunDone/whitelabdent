@@ -1,0 +1,25 @@
+{
+  "name": "white-lab.ru",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "node scripts/build-ts.mjs",
+    "start": "npm run build && node dist/server.js",
+    "start:build": "npm run start",
+    "dev": "npm run build && (node scripts/build-ts.mjs --watch & node --watch dist/server.js)",
+    "dev:ts": "node --experimental-strip-types src/server.ts",
+    "media:sync": "node scripts/sync-media.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Production-ready dark themed White Lab website with admin CMS and SEO",
+  "dependencies": {
+    "compression": "^1.8.1",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2"
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Forms Test</title>
+  
+  <link rel="stylesheet" href="/styles/core/variables.css">
+  <link rel="stylesheet" href="/styles/core/reset.css">
+  <link rel="stylesheet" href="/styles/components/forms.css">
+  
+  <style>
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      margin-bottom: 2rem;
+      color: var(--color-brand-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Forms Component Test</h1>
+    
+    <form class="form-modern" id="test-form">
+      <div class="form-field">
+        <input type="text" id="name" class="form-input" placeholder="Ваше имя" required>
+        <label for="name" class="form-label">Имя *</label>
+        <span class="form-validation-icon"></span>
+        <span class="form-validation-message"></span>
+      </div>
+      
+      <div class="form-field">
+        <input type="email" id="email" class="form-input" placeholder="example@mail.com" required>
+        <label for="email" class="form-label">Email *</label>
+        <span class="form-validation-icon"></span>
+        <span class="form-validation-message"></span>
+      </div>
+      
+      <div class="form-field">
+        <input type="tel" id="phone" class="form-input" placeholder="+7 (999) 123-45-67" required>
+        <label for="phone" class="form-label">Телефон *</label>
+        <span class="form-validation-icon"></span>
+        <span class="form-validation-message"></span>
+      </div>
+      
+      <div class="form-checkbox">
+        <input type="checkbox" id="agree" required>
+        <label for="agree">Я согласен с условиями *</label>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="form-button">
+          Отправить
+        </button>
+        <button type="reset" class="form-button-secondary">
+          Очистить
+        </button>
+      </div>
+    </form>
+  </div>
+  
+  <script src="/scripts/components/forms.js"></script>
+  
+  <script>
+    console.log('Test page loaded');
+    console.log('WhiteLabForms API:', window.WhiteLabForms);
+  </script>
+</body>
+</html>

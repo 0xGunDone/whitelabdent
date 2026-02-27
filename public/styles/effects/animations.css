@@ -1,0 +1,470 @@
+/**
+ * Animations
+ * Modern UI Redesign - White Lab
+ * 
+ * This file contains keyframe animations for:
+ * - Element appearance animations (Requirements 2.3, 7.1, 7.2)
+ * - Hover effect animations (Requirements 20.1, 20.2)
+ * - Loading animations
+ * 
+ * All animations use transform and opacity for optimal performance (60fps).
+ */
+
+/* ========================================
+   Element Appearance Animations
+   Requirements 2.3, 7.1, 7.2
+   ======================================== */
+
+/**
+ * Fade In - Basic fade in animation
+ * Used for: General element reveals
+ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/**
+ * Fade In Up - Fade in with upward movement
+ * Used for: Cards, sections, content blocks
+ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Fade In Down - Fade in with downward movement
+ * Used for: Headers, navigation, dropdowns
+ */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Fade In Left - Fade in from left
+ * Used for: Side panels, images
+ */
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/**
+ * Fade In Right - Fade in from right
+ * Used for: Side panels, images
+ */
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/**
+ * Scale In - Scale up with fade
+ * Used for: Modals, popups, important elements
+ */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/**
+ * Slide In Up - Slide up from bottom
+ * Used for: Bottom sheets, notifications
+ */
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Zoom In - Zoom in effect
+ * Used for: Images, featured content
+ */
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ========================================
+   Hover Effect Animations
+   Requirements 20.1, 20.2
+   ======================================== */
+
+/**
+ * Float - Gentle floating motion
+ * Used for: Floating cards, decorative elements
+ */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/**
+ * Bob - Subtle bobbing motion
+ * Used for: Icons, badges, floating elements
+ */
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/**
+ * Pulse - Pulsing scale effect
+ * Used for: Attention-grabbing elements, CTAs
+ */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/**
+ * Glow - Glowing effect
+ * Used for: Buttons, interactive elements
+ */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(55, 208, 190, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(55, 208, 190, 0.6);
+  }
+}
+
+/**
+ * Shimmer - Shimmer effect for hover
+ * Used for: Cards, buttons, interactive surfaces
+ */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/**
+ * Shake - Gentle shake animation
+ * Used for: Error states, attention
+ */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* ========================================
+   Loading Animations
+   ======================================== */
+
+/**
+ * Spin - Continuous rotation
+ * Used for: Loading spinners
+ */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/**
+ * Spinner Dash - Animated stroke dash
+ * Used for: Circular progress indicators
+ */
+@keyframes spinnerDash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 100, 200;
+    stroke-dashoffset: -15;
+  }
+  100% {
+    stroke-dasharray: 100, 200;
+    stroke-dashoffset: -125;
+  }
+}
+
+/**
+ * Dots - Animated loading dots
+ * Used for: Text-based loading indicators
+ */
+@keyframes dots {
+  0%, 20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/**
+ * Progress - Progress bar animation
+ * Used for: Progress indicators
+ */
+@keyframes progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/**
+ * Skeleton - Skeleton loading animation
+ * Used for: Skeleton screens
+ */
+@keyframes skeleton {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/**
+ * Bounce - Bouncing animation
+ * Used for: Loading indicators, playful elements
+ */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/**
+ * Ripple - Ripple effect
+ * Used for: Click feedback, interactive elements
+ */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   Gradient Animations
+   ======================================== */
+
+/**
+ * Gradient Shift - Animated gradient
+ * Used for: Backgrounds, hero sections
+ */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/**
+ * Gradient Rotate - Rotating gradient
+ * Used for: Borders, decorative elements
+ */
+@keyframes gradientRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   Utility Animation Classes
+   ======================================== */
+
+/**
+ * Apply fade in animation
+ */
+.animate-fade-in {
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+/**
+ * Apply fade in up animation
+ */
+.animate-fade-in-up {
+  animation: fadeInUp var(--transition-slow) ease-out;
+}
+
+/**
+ * Apply fade in down animation
+ */
+.animate-fade-in-down {
+  animation: fadeInDown var(--transition-slow) ease-out;
+}
+
+/**
+ * Apply scale in animation
+ */
+.animate-scale-in {
+  animation: scaleIn var(--transition-base) ease-out;
+}
+
+/**
+ * Apply float animation
+ */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/**
+ * Apply bob animation
+ */
+.animate-bob {
+  animation: bob 2s ease-in-out infinite;
+}
+
+/**
+ * Apply pulse animation
+ */
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/**
+ * Apply spin animation
+ */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/**
+ * Apply bounce animation
+ */
+.animate-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* ========================================
+   Animation Delays
+   ======================================== */
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+/* ========================================
+   Reduced Motion Support
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Disable infinite animations */
+  .animate-float,
+  .animate-bob,
+  .animate-pulse,
+  .animate-spin,
+  .animate-bounce {
+    animation: none !important;
+  }
+}

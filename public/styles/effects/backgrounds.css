@@ -1,0 +1,470 @@
+/**
+ * Animated Backgrounds and Effects
+ * Modern UI Redesign - White Lab
+ * 
+ * This file contains animated backgrounds, floating orbs, and grid patterns
+ * with glow effects for creating dynamic, modern visual experiences.
+ * 
+ * Requirements: 13.1, 13.2, 13.3
+ */
+
+/* ========================================
+   Animated Gradients (Requirement 13.1)
+   ======================================== */
+
+/**
+ * Animated gradient background for hero sections and large containers
+ * Creates a smooth, flowing gradient animation
+ */
+.bg-animated-gradient {
+  position: relative;
+  background: linear-gradient(
+    -45deg,
+    var(--color-bg-primary),
+    var(--color-bg-secondary),
+    var(--color-surface),
+    var(--color-surface-elevated)
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/**
+ * Brand-colored animated gradient
+ * Uses brand colors for more vibrant effect
+ */
+.bg-animated-gradient-brand {
+  position: relative;
+  background: linear-gradient(
+    -45deg,
+    rgba(55, 208, 190, 0.1),
+    rgba(116, 229, 255, 0.08),
+    rgba(55, 208, 190, 0.05),
+    rgba(116, 229, 255, 0.12)
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+
+/**
+ * Radial animated gradient
+ * Creates a pulsing radial effect
+ */
+.bg-animated-gradient-radial {
+  position: relative;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(55, 208, 190, 0.15),
+    rgba(116, 229, 255, 0.08),
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: radialPulse 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes radialPulse {
+  0%, 100% {
+    background-size: 100% 100%;
+    opacity: 0.6;
+  }
+  50% {
+    background-size: 150% 150%;
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   Floating Orbs (Requirement 13.2)
+   ======================================== */
+
+/**
+ * Container for floating orbs
+ * Should be positioned absolutely within a parent container
+ */
+.floating-orbs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: var(--z-base);
+}
+
+/**
+ * Individual floating orb
+ * Creates a glowing sphere that floats and animates
+ */
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  animation: float 20s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/**
+ * Orb variants with different colors and sizes
+ */
+.floating-orb-primary {
+  background: radial-gradient(
+    circle,
+    rgba(55, 208, 190, 0.6),
+    rgba(55, 208, 190, 0.2),
+    transparent
+  );
+  width: 400px;
+  height: 400px;
+  top: -10%;
+  left: -5%;
+  animation-duration: 25s;
+}
+
+.floating-orb-secondary {
+  background: radial-gradient(
+    circle,
+    rgba(116, 229, 255, 0.5),
+    rgba(116, 229, 255, 0.15),
+    transparent
+  );
+  width: 350px;
+  height: 350px;
+  top: 40%;
+  right: -8%;
+  animation-duration: 22s;
+  animation-delay: -5s;
+}
+
+.floating-orb-accent {
+  background: radial-gradient(
+    circle,
+    rgba(255, 110, 110, 0.4),
+    rgba(255, 110, 110, 0.1),
+    transparent
+  );
+  width: 300px;
+  height: 300px;
+  bottom: -5%;
+  left: 30%;
+  animation-duration: 28s;
+  animation-delay: -10s;
+}
+
+.floating-orb-small {
+  background: radial-gradient(
+    circle,
+    rgba(55, 208, 190, 0.5),
+    rgba(55, 208, 190, 0.1),
+    transparent
+  );
+  width: 200px;
+  height: 200px;
+  top: 60%;
+  left: 10%;
+  animation-duration: 18s;
+  animation-delay: -8s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translate(30px, -40px) scale(1.1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-20px, -60px) scale(0.95);
+    opacity: 0.35;
+  }
+  75% {
+    transform: translate(40px, -30px) scale(1.05);
+    opacity: 0.45;
+  }
+}
+
+/* ========================================
+   Grid Patterns (Requirement 13.3)
+   ======================================== */
+
+/**
+ * Animated grid pattern with glow effect
+ * Creates a futuristic grid background
+ */
+.bg-grid-pattern {
+  position: relative;
+  background-image: 
+    linear-gradient(rgba(55, 208, 190, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(55, 208, 190, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center center;
+}
+
+/**
+ * Grid pattern with animated glow
+ * Adds a pulsing glow effect to the grid
+ */
+.bg-grid-glow {
+  position: relative;
+  background-image: 
+    linear-gradient(rgba(55, 208, 190, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(55, 208, 190, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridGlow 4s ease-in-out infinite;
+}
+
+/**
+ * Perspective grid pattern
+ * Creates a 3D perspective grid effect
+ */
+.bg-grid-perspective {
+  position: relative;
+  background-image: 
+    linear-gradient(rgba(116, 229, 255, 0.06) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(116, 229, 255, 0.06) 2px, transparent 2px);
+  background-size: 60px 60px;
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: center bottom;
+}
+
+/**
+ * Dot grid pattern
+ * Creates a pattern of glowing dots
+ */
+.bg-dot-grid {
+  position: relative;
+  background-image: radial-gradient(
+    circle,
+    rgba(55, 208, 190, 0.15) 1px,
+    transparent 1px
+  );
+  background-size: 30px 30px;
+  background-position: center center;
+}
+
+/**
+ * Animated dot grid with pulse effect
+ */
+.bg-dot-grid-pulse {
+  position: relative;
+  background-image: radial-gradient(
+    circle,
+    rgba(55, 208, 190, 0.2) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 40px 40px;
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+  0%, 100% {
+    opacity: 0.6;
+    background-size: 40px 40px;
+  }
+  50% {
+    opacity: 1;
+    background-size: 42px 42px;
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   Combined Effects
+   ======================================== */
+
+/**
+ * Hero background with all effects combined
+ * Combines gradient, orbs, and grid for maximum impact
+ */
+.bg-hero-effects {
+  position: relative;
+  background: var(--gradient-hero);
+  overflow: hidden;
+}
+
+.bg-hero-effects::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(55, 208, 190, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(55, 208, 190, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.5;
+  animation: gridSlide 20s linear infinite;
+}
+
+@keyframes gridSlide {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 60px 60px;
+  }
+}
+
+/**
+ * Section background with subtle effects
+ * Lighter version for content sections
+ */
+.bg-section-effects {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-primary) 0%,
+    var(--color-bg-secondary) 100%
+  );
+}
+
+.bg-section-effects::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(55, 208, 190, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 40px 40px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ========================================
+   Interactive Light Effects (Requirement 13.4)
+   ======================================== */
+
+/**
+ * Container for cursor-following light effect
+ * Requires JavaScript to update CSS custom properties
+ */
+.interactive-light {
+  position: relative;
+  overflow: hidden;
+}
+
+.interactive-light::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(55, 208, 190, 0.15),
+    rgba(116, 229, 255, 0.08),
+    transparent 70%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  transform: translate(-50%, -50%);
+  left: var(--mouse-x, 50%);
+  top: var(--mouse-y, 50%);
+  filter: blur(40px);
+}
+
+.interactive-light:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   Performance Optimizations (Requirement 13.5)
+   ======================================== */
+
+/**
+ * Optimize animations for performance
+ * Use will-change and transform for GPU acceleration
+ */
+.bg-animated-gradient,
+.bg-animated-gradient-brand,
+.bg-animated-gradient-radial,
+.floating-orb {
+  will-change: transform, opacity;
+}
+
+/**
+ * Reduce motion for accessibility
+ * Disable or reduce animations for users who prefer reduced motion
+ */
+@media (prefers-reduced-motion: reduce) {
+  .bg-animated-gradient,
+  .bg-animated-gradient-brand,
+  .bg-animated-gradient-radial,
+  .floating-orb,
+  .bg-grid-glow,
+  .bg-dot-grid-pulse,
+  .bg-hero-effects::before {
+    animation: none;
+  }
+  
+  .floating-orb {
+    opacity: 0.2;
+  }
+  
+  .interactive-light::before {
+    display: none;
+  }
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+/**
+ * Overlay for darkening backgrounds
+ */
+.bg-overlay {
+  position: relative;
+}
+
+.bg-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 7, 11, 0.3) 0%,
+    rgba(5, 7, 11, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/**
+ * Vignette effect for edges
+ */
+.bg-vignette {
+  position: relative;
+}
+
+.bg-vignette::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(5, 7, 11, 0.4) 100%
+  );
+  pointer-events: none;
+}
