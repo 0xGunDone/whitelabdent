@@ -1,10 +1,16 @@
 node_modules/
 dist/
 uploads/
+*.pid
 
 # Media artifacts (heavy, generated)
 public/media/source/
 public/media/optimized/
+
+# Runtime SQLite storage
+content/*.sqlite
+content/*.sqlite-shm
+content/*.sqlite-wal
 
 # Logs and diagnostics
 *.log
