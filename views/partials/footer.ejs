@@ -120,3 +120,25 @@
     </div>
   </div>
 </footer>
+<%
+  const mobilePhoneHref = site?.brand?.phoneValue ? `tel:${site.brand.phoneValue}` : '';
+  const mobileRouteHref = site?.brand?.mapYandex || site?.brand?.map2gis || '/#contacts';
+  const mobileCaseHref = site?.brand?.orderLink || '/#services';
+  const routeExternal = /^https?:\/\//.test(mobileRouteHref);
+  const caseExternal = /^https?:\/\//.test(mobileCaseHref);
+%>
+<div class="mobile-cta" aria-label="Быстрые действия">
+  <% if (mobilePhoneHref) { %>
+    <a class="mobile-cta-call" href="<%= mobilePhoneHref %>">Позвонить</a>
+  <% } %>
+  <a
+    class="mobile-cta-route"
+    href="<%= mobileRouteHref %>"
+    <%= routeExternal ? 'target="_blank" rel="noopener noreferrer"' : '' %>
+  >Маршрут</a>
+  <a
+    class="mobile-cta-case"
+    href="<%= mobileCaseHref %>"
+    <%= caseExternal ? 'target="_blank" rel="noopener noreferrer"' : '' %>
+  >Запустить кейс</a>
+</div>

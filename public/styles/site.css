@@ -2384,7 +2384,7 @@ main {
     bottom: calc(0.55rem + env(safe-area-inset-bottom, 0px));
     z-index: 50;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.4rem;
     border: 1px solid rgba(255, 255, 255, 0.17);
     border-radius: 16px;
@@ -2408,9 +2408,15 @@ main {
     color: #dce7f2;
   }
 
-  .mobile-cta a:first-child {
+  .mobile-cta .mobile-cta-call {
     border-color: rgba(55, 208, 190, 0.6);
     color: var(--brand);
+  }
+
+  .mobile-cta .mobile-cta-case {
+    border-color: rgba(116, 229, 255, 0.5);
+    color: #c9f4ff;
+    background: rgba(116, 229, 255, 0.08);
   }
 }
 

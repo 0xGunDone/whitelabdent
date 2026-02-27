@@ -1,6 +1,80 @@
 (() => {
   const contentForm = document.querySelector("[data-admin-content-form]");
   const mediaCards = Array.from(document.querySelectorAll("[data-media-card]"));
+  const servicesForm = document.querySelector("[data-admin-services-form]");
+
+  const getDragAfterElement = (container, pointerY, selector, draggingItem) => {
+    const candidates = Array.from(container.querySelectorAll(selector)).filter((item) => item !== draggingItem);
+    let closestOffset = Number.NEGATIVE_INFINITY;
+    let closestElement = null;
+
+    for (const element of candidates) {
+      const rect = element.getBoundingClientRect();
+      const offset = pointerY - rect.top - rect.height / 2;
+      if (offset < 0 && offset > closestOffset) {
+        closestOffset = offset;
+        closestElement = element;
+      }
+    }
+
+    return closestElement;
+  };
+
+  const enableSortableList = (container, selector, onUpdate) => {
+    let draggingItem = null;
+
+    container.addEventListener("dragstart", (event) => {
+      const target = event.target.closest(selector);
+      if (!target) {
+        return;
+      }
+
+      draggingItem = target;
+      target.classList.add("is-dragging");
+
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", target.dataset.sortKey || target.dataset.serviceSlug || "item");
+      }
+    });
+
+    container.addEventListener("dragover", (event) => {
+      if (!draggingItem) {
+        return;
+      }
+
+      event.preventDefault();
+      const nextElement = getDragAfterElement(container, event.clientY, selector, draggingItem);
+      if (!nextElement) {
+        container.appendChild(draggingItem);
+        return;
+      }
+
+      if (nextElement !== draggingItem) {
+        container.insertBefore(draggingItem, nextElement);
+      }
+    });
+
+    container.addEventListener("drop", (event) => {
+      if (!draggingItem) {
+        return;
+      }
+      event.preventDefault();
+      onUpdate();
+    });
+
+    container.addEventListener("dragend", () => {
+      if (!draggingItem) {
+        return;
+      }
+
+      draggingItem.classList.remove("is-dragging");
+      draggingItem = null;
+      onUpdate();
+    });
+
+    onUpdate();
+  };
 
   const toArrayField = (value) => {
     if (Array.isArray(value)) {
@@ -213,6 +287,28 @@
       auditTimer = setTimeout(renderSeoAudit, 120);
     };
 
+    const sectionSortList = contentForm.querySelector("[data-section-sort-list]");
+    if (sectionSortList) {
+      const updateSectionOrderFields = () => {
+        const items = Array.from(sectionSortList.querySelectorAll("[data-sort-item]"));
+        items.forEach((item, index) => {
+          const position = String(index + 1);
+          const input = item.querySelector("[data-section-order-input]");
+          const badge = item.querySelector("[data-sort-position]");
+
+          if (input) {
+            input.value = position;
+          }
+          if (badge) {
+            badge.textContent = position;
+          }
+        });
+        scheduleAudit();
+      };
+
+      enableSortableList(sectionSortList, "[data-sort-item]", updateSectionOrderFields);
+    }
+
     [seoTitle, seoDescription, seoOgTitle, seoOgDescription].forEach((field) => {
       if (!field) {
         return;
@@ -236,40 +332,55 @@
     renderSeoAudit();
   }
 
+  if (servicesForm) {
+    const servicesSortList = servicesForm.querySelector("[data-service-sort-list]");
+    if (servicesSortList) {
+      const updateServicePositions = () => {
+        const items = Array.from(servicesSortList.querySelectorAll("[data-service-sort-item]"));
+        items.forEach((item, index) => {
+          const badge = item.querySelector("[data-service-position]");
+          if (badge) {
+            badge.textContent = `#${index + 1}`;
+          }
+        });
+      };
+
+      enableSortableList(servicesSortList, "[data-service-sort-item]", updateServicePositions);
+    }
+  }
+
   const cards = Array.from(document.querySelectorAll("[data-media-card]"));
   const searchInput = document.querySelector("[data-media-search]");
   const typeSelect = document.querySelector("[data-media-type]");
   const countLabel = document.querySelector("[data-media-count]");
 
-  if (!cards.length || !searchInput || !typeSelect || !countLabel) {
-    return;
-  }
+  if (cards.length && searchInput && typeSelect && countLabel) {
+    function applyMediaFilter() {
+      const search = searchInput.value.trim().toLowerCase();
+      const type = typeSelect.value;
+      let visible = 0;
 
-  function applyMediaFilter() {
-    const search = searchInput.value.trim().toLowerCase();
-    const type = typeSelect.value;
-    let visible = 0;
+      for (const card of cards) {
+        const cardTitle = card.dataset.title || "";
+        const cardType = card.dataset.type || "";
+        const matchesSearch = !search || cardTitle.includes(search);
+        const matchesType = type === "all" || cardType === type;
+        const isVisible = matchesSearch && matchesType;
 
-    for (const card of cards) {
-      const cardTitle = card.dataset.title || "";
-      const cardType = card.dataset.type || "";
-      const matchesSearch = !search || cardTitle.includes(search);
-      const matchesType = type === "all" || cardType === type;
-      const isVisible = matchesSearch && matchesType;
-
-      card.classList.toggle("is-hidden", !isVisible);
-      if (isVisible) {
-        visible += 1;
+        card.classList.toggle("is-hidden", !isVisible);
+        if (isVisible) {
+          visible += 1;
+        }
       }
+
+      countLabel.textContent = `Показано: ${visible} / ${cards.length}`;
     }
 
-    countLabel.textContent = `Показано: ${visible} / ${cards.length}`;
+    [searchInput, typeSelect].forEach((control) => {
+      control.addEventListener("input", applyMediaFilter);
+      control.addEventListener("change", applyMediaFilter);
+    });
+
+    applyMediaFilter();
   }
-
-  [searchInput, typeSelect].forEach((control) => {
-    control.addEventListener("input", applyMediaFilter);
-    control.addEventListener("change", applyMediaFilter);
-  });
-
-  applyMediaFilter();
 })();

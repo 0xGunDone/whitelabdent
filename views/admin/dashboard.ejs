@@ -22,6 +22,10 @@
         acc[key] = index + 1;
         return acc;
       }, {});
+      const normalizedSectionOrder = [
+        ...sectionsOrder.filter((key) => sectionLabels[key]),
+        ...Object.keys(sectionLabels).filter((key) => !sectionsOrder.includes(key))
+      ];
     %>
     <header class="admin-topbar">
       <div>
@@ -121,13 +125,17 @@
           </aside>
 
           <h3 id="admin-sections">Секции главной и позиции</h3>
-          <p class="admin-section-note">Позиция 1 будет идти сразу после hero. Порядок секций можно менять без правки шаблона.</p>
-          <% for (const key of Object.keys(sectionLabels)) { %>
-            <label>
-              Позиция: <%= sectionLabels[key] %>
-              <input type="number" min="1" max="10" name="section_order_<%= key %>" value="<%= sectionPositions[key] || '' %>" />
-            </label>
-          <% } %>
+          <p class="admin-section-note">Перетаскивайте секции мышью: порядок сверху вниз = порядок на главной.</p>
+          <div class="admin-sort-list admin-help-full" data-section-sort-list>
+            <% for (const [index, key] of normalizedSectionOrder.entries()) { %>
+              <div class="admin-sort-item" data-sort-item data-sort-key="<%= key %>" draggable="true">
+                <span class="admin-sort-handle" aria-hidden="true">⋮⋮</span>
+                <span class="admin-sort-title"><%= sectionLabels[key] %></span>
+                <span class="admin-sort-position" data-sort-position><%= index + 1 %></span>
+                <input type="hidden" name="section_order_<%= key %>" value="<%= index + 1 %>" data-section-order-input />
+              </div>
+            <% } %>
+          </div>
           <label>
             Заголовок секции «Услуги»
             <input name="section_services_title" value="<%= site?.sections?.services?.title || '' %>" />
@@ -343,42 +351,48 @@
 
       <section class="admin-card" id="admin-services-pages">
         <h2>Страницы услуг</h2>
-        <p class="admin-section-note">Редактирование контента страниц услуг и встроенных медиафайлов (по ID из медиатеки).</p>
+        <p class="admin-section-note">Редактирование контента страниц услуг и встроенных медиафайлов (по ID из медиатеки). Порядок можно менять перетаскиванием карточек.</p>
         <form method="post" action="/admin/services" class="admin-services-editor" data-admin-services-form>
-          <% for (const [index, item] of (site?.services || []).entries()) { %>
-            <details class="admin-service-item" <%= index === 0 ? 'open' : '' %>>
-              <summary>
-                <strong><%= item.title %></strong>
-                <span>/services/<%= item.slug %></span>
-              </summary>
-              <div class="admin-service-fields">
-                <label>
-                  Slug
-                  <input name="service_slug" value="<%= item.slug %>" required />
-                </label>
-                <label>
-                  Заголовок
-                  <input name="service_title" value="<%= item.title %>" required />
-                </label>
-                <label>
-                  Короткое описание
-                  <input name="service_short" value="<%= item.short || '' %>" />
-                </label>
-                <label class="admin-help-full">
-                  Полное описание
-                  <textarea name="service_description" rows="4"><%= item.description || '' %></textarea>
-                </label>
-                <label>
-                  Материалы (каждый с новой строки)
-                  <textarea name="service_materials" rows="4"><%= (item.materials || []).join('\n') %></textarea>
-                </label>
-                <label>
-                  Медиа ID для этой страницы (каждый с новой строки)
-                  <textarea name="service_media_ids" rows="4"><%= (item.mediaIds || []).join('\n') %></textarea>
-                </label>
-              </div>
-            </details>
-          <% } %>
+          <div class="admin-service-sort-list" data-service-sort-list>
+            <% for (const [index, item] of (site?.services || []).entries()) { %>
+              <details class="admin-service-item" data-service-sort-item draggable="true" <%= index === 0 ? 'open' : '' %>>
+                <summary>
+                  <span class="admin-drag-handle" aria-hidden="true">⋮⋮</span>
+                  <span class="admin-service-summary-text">
+                    <strong><%= item.title %></strong>
+                    <span>/services/<%= item.slug %></span>
+                  </span>
+                  <span class="admin-service-position" data-service-position>#<%= index + 1 %></span>
+                </summary>
+                <div class="admin-service-fields">
+                  <label>
+                    Slug
+                    <input name="service_slug" value="<%= item.slug %>" required />
+                  </label>
+                  <label>
+                    Заголовок
+                    <input name="service_title" value="<%= item.title %>" required />
+                  </label>
+                  <label>
+                    Короткое описание
+                    <input name="service_short" value="<%= item.short || '' %>" />
+                  </label>
+                  <label class="admin-help-full">
+                    Полное описание
+                    <textarea name="service_description" rows="4"><%= item.description || '' %></textarea>
+                  </label>
+                  <label>
+                    Материалы (каждый с новой строки)
+                    <textarea name="service_materials" rows="4"><%= (item.materials || []).join('\n') %></textarea>
+                  </label>
+                  <label>
+                    Медиа ID для этой страницы (каждый с новой строки)
+                    <textarea name="service_media_ids" rows="4"><%= (item.mediaIds || []).join('\n') %></textarea>
+                  </label>
+                </div>
+              </details>
+            <% } %>
+          </div>
           <details class="admin-help admin-help-full">
             <summary>Справочник ID медиа для вставки</summary>
             <div class="admin-media-id-list">

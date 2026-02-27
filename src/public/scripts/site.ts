@@ -2,6 +2,40 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  const emitAnalyticsEvent = (eventName, payload = {}) => {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: eventName, ...payload });
+      window.dispatchEvent(new CustomEvent("white:analytics", { detail: { event: eventName, ...payload } }));
+    } catch {
+      // no-op
+    }
+  };
+
+  const trackedSelector = ".btn, .call-btn, .mobile-cta a, .service-card a, .contact-links a, .map-link, .social-link";
+
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest(trackedSelector);
+    if (!target) {
+      return;
+    }
+
+    const tagName = String(target.tagName || "").toLowerCase();
+    const href = tagName === "a" ? target.getAttribute("href") || "" : "";
+    const label = (target.textContent || "").trim().slice(0, 80);
+
+    emitAnalyticsEvent("cta_click", {
+      label,
+      href,
+      path: window.location.pathname,
+      component: target.className || ""
+    });
+  });
+
+  emitAnalyticsEvent("page_view", {
+    path: window.location.pathname,
+    title: document.title
+  });
 
   const filterButtons = Array.from(document.querySelectorAll("[data-media-filter]"));
   const mediaGrid = document.querySelector("[data-media-grid]");
