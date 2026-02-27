@@ -7,12 +7,12 @@
     </a>
 
     <nav class="nav-links" id="navigation" aria-label="Разделы сайта" aria-hidden="true">
-      <a href="/#services">Услуги</a>
-      <a href="/#process">Процесс</a>
-      <a href="/#materials">Материалы</a>
-      <a href="/#about">О лаборатории</a>
-      <a href="/#gallery">Медиа</a>
-      <a href="/#contacts">Контакты</a>
+      <% if (!sectionVisibility || sectionVisibility.services !== false) { %><a href="/#services">Услуги</a><% } %>
+      <% if (!sectionVisibility || sectionVisibility.process !== false) { %><a href="/#process">Процесс</a><% } %>
+      <% if (!sectionVisibility || sectionVisibility.materials !== false) { %><a href="/#materials">Материалы</a><% } %>
+      <% if (!sectionVisibility || sectionVisibility.about !== false) { %><a href="/#about">О лаборатории</a><% } %>
+      <% if (!sectionVisibility || sectionVisibility.gallery !== false) { %><a href="/#gallery">Медиа</a><% } %>
+      <% if (!sectionVisibility || sectionVisibility.contacts !== false) { %><a href="/#contacts">Контакты</a><% } %>
     </nav>
 
     <a class="call-btn" href="tel:<%= site?.brand?.phoneValue || '' %>">Запустить кейс</a>

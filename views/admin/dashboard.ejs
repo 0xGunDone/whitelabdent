@@ -26,6 +26,28 @@
         ...sectionsOrder.filter((key) => sectionLabels[key]),
         ...Object.keys(sectionLabels).filter((key) => !sectionsOrder.includes(key))
       ];
+      const toDateTimeLocal = (value) => {
+        if (!value || typeof value !== 'string') {
+          return '';
+        }
+        if (value.length >= 16 && value.includes('T') && !value.endsWith('Z') && !value.includes('+')) {
+          return value.slice(0, 16);
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return '';
+        }
+        const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+        return localDate.toISOString().slice(0, 16);
+      };
+      const sectionConfig = site?.sections || {};
+      const mediaPreviewIndex = mediaItems.map((item) => ({
+        id: item.id,
+        type: item.type,
+        title: item.title || item.alt || 'Без названия',
+        alt: item.alt || '',
+        src: item.localOptimized
+      }));
     %>
     <header class="admin-topbar">
       <div>
@@ -87,6 +109,7 @@
           <a href="#admin-services-pages">Страницы услуг</a>
           <a href="#admin-faq">ЧаВо</a>
           <a href="#admin-metrics">Метрики</a>
+          <a href="#admin-media-queue">Очередь</a>
           <a href="#admin-media">Медиатека</a>
         </nav>
 
@@ -136,6 +159,40 @@
               </div>
             <% } %>
           </div>
+          <div class="admin-section-schedule-grid admin-help-full">
+            <% for (const key of normalizedSectionOrder) { %>
+              <% const settings = sectionConfig[key] || {}; %>
+              <fieldset class="admin-section-schedule-card" data-section-settings="<%= key %>">
+                <legend><%= sectionLabels[key] %></legend>
+                <input type="hidden" name="section_<%= key %>_enabled" value="0" />
+                <label class="admin-toggle-row">
+                  <input
+                    type="checkbox"
+                    name="section_<%= key %>_enabled"
+                    value="1"
+                    <%= settings.enabled === false ? '' : 'checked' %>
+                  />
+                  <span>Показывать секцию</span>
+                </label>
+                <label>
+                  Показ с
+                  <input
+                    type="datetime-local"
+                    name="section_<%= key %>_visible_from"
+                    value="<%= toDateTimeLocal(settings.visibleFrom) %>"
+                  />
+                </label>
+                <label>
+                  Показ до
+                  <input
+                    type="datetime-local"
+                    name="section_<%= key %>_visible_to"
+                    value="<%= toDateTimeLocal(settings.visibleTo) %>"
+                  />
+                </label>
+              </fieldset>
+            <% } %>
+          </div>
           <label>
             Заголовок секции «Услуги»
             <input name="section_services_title" value="<%= site?.sections?.services?.title || '' %>" />
@@ -163,6 +220,14 @@
           <label>
             Описание секции «Материалы»
             <textarea name="section_materials_description" rows="3"><%= site?.sections?.materials?.description || '' %></textarea>
+          </label>
+          <label>
+            Заголовок секции «О лаборатории»
+            <input name="section_about_title" value="<%= site?.sections?.about?.title || '' %>" />
+          </label>
+          <label>
+            Описание секции «О лаборатории»
+            <textarea name="section_about_description" rows="3"><%= site?.sections?.about?.description || '' %></textarea>
           </label>
           <label>
             Заголовок секции «Медиатека»
@@ -387,8 +452,23 @@
                   </label>
                   <label>
                     Медиа ID для этой страницы (каждый с новой строки)
-                    <textarea name="service_media_ids" rows="4"><%= (item.mediaIds || []).join('\n') %></textarea>
+                    <textarea name="service_media_ids" rows="4" data-service-media-ids><%= (item.mediaIds || []).join('\n') %></textarea>
                   </label>
+                  <div class="admin-service-media-picker admin-help-full">
+                    <label>
+                      Добавить медиа из списка
+                      <select data-media-picker>
+                        <option value="">Выберите ID</option>
+                        <% for (const mediaItem of mediaItems) { %>
+                          <option value="<%= mediaItem.id %>"><%= mediaItem.id %> — <%= mediaItem.title || mediaItem.alt || 'Без названия' %></option>
+                        <% } %>
+                      </select>
+                    </label>
+                    <button type="button" data-media-picker-add>Добавить ID</button>
+                  </div>
+                  <div class="admin-service-media-preview admin-help-full" data-service-media-preview>
+                    <p class="admin-section-note">Предпросмотр встроенных медиа появится здесь после выбора ID.</p>
+                  </div>
                 </div>
               </details>
             <% } %>
@@ -408,20 +488,56 @@
       </section>
 
       <section class="admin-card">
+        <h2 id="admin-media-queue">Очередь медиа-задач</h2>
+        <p class="admin-section-note">Импорт и загрузки обрабатываются в фоне. Здесь видно актуальный статус задач.</p>
+        <div class="admin-job-table-wrap">
+          <table class="admin-job-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Тип</th>
+                <th>Статус</th>
+                <th>Попытки</th>
+                <th>Создано</th>
+                <th>Ошибка</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!(mediaJobs || []).length) { %>
+                <tr>
+                  <td colspan="6">Очередь пуста.</td>
+                </tr>
+              <% } %>
+              <% for (const job of (mediaJobs || [])) { %>
+                <tr>
+                  <td>#<%= job.id %></td>
+                  <td><%= job.jobType === 'upload_file' ? 'Загрузка файла' : 'Импорт URL' %></td>
+                  <td><span class="admin-job-status status-<%= job.status %>"><%= job.status %></span></td>
+                  <td><%= job.attempts %></td>
+                  <td><%= job.createdAt ? new Date(job.createdAt).toLocaleString('ru-RU') : '—' %></td>
+                  <td><%= job.lastError || '—' %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-card">
         <h2 id="admin-media">Медиатека</h2>
         <div class="admin-media-actions">
           <form method="post" action="/admin/media/import" class="admin-inline-form">
             <h3>Импорт по URL</h3>
             <input name="import_url" placeholder="https://..." required />
             <input name="import_title" placeholder="Название" />
-            <button type="submit">Импортировать</button>
+            <button type="submit">Поставить в очередь</button>
           </form>
 
           <form method="post" action="/admin/media/upload" enctype="multipart/form-data" class="admin-inline-form">
             <h3>Загрузка файла</h3>
             <input type="file" name="media_file" required />
             <input name="upload_title" placeholder="Название" />
-            <button type="submit">Загрузить</button>
+            <button type="submit">Поставить в очередь</button>
           </form>
         </div>
 
@@ -456,6 +572,26 @@
                 <span>ID: <%= item.id %></span>
                 <span>Тип: <%= item.type %></span>
               </div>
+              <form method="post" action="/admin/media/update-meta" class="admin-media-edit">
+                <input type="hidden" name="media_id" value="<%= item.id %>" />
+                <label>
+                  Заголовок
+                  <input
+                    name="media_title"
+                    value="<%= item.title || '' %>"
+                    data-media-title-input="<%= item.id %>"
+                  />
+                </label>
+                <label>
+                  ALT-текст
+                  <input
+                    name="media_alt"
+                    value="<%= item.alt || '' %>"
+                    data-media-alt-input="<%= item.id %>"
+                  />
+                </label>
+                <button type="submit">Сохранить мета</button>
+              </form>
               <form method="post" action="/admin/media/delete">
                 <input type="hidden" name="media_id" value="<%= item.id %>" />
                 <button type="submit" class="danger">Удалить</button>
@@ -465,6 +601,7 @@
         </div>
       </section>
     </main>
+    <script type="application/json" data-admin-media-index><%- JSON.stringify(mediaPreviewIndex) %></script>
     <script src="/scripts/admin.js"></script>
   </body>
 </html>

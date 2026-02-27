@@ -45,6 +45,9 @@ type HomeSectionKey = "services" | "process" | "materials" | "about" | "gallery"
 interface SectionBlock {
   title: string;
   description: string;
+  enabled: boolean;
+  visibleFrom: string;
+  visibleTo: string;
 }
 
 interface ProcessSection extends SectionBlock {
@@ -53,6 +56,9 @@ interface ProcessSection extends SectionBlock {
 
 interface ContactsSection {
   title: string;
+  enabled: boolean;
+  visibleFrom: string;
+  visibleTo: string;
 }
 
 interface HomeSectionsConfig {
@@ -60,6 +66,7 @@ interface HomeSectionsConfig {
   services: SectionBlock;
   process: ProcessSection;
   materials: SectionBlock;
+  about: SectionBlock;
   gallery: SectionBlock;
   contacts: ContactsSection;
 }
@@ -94,6 +101,7 @@ interface ViewModel {
   media: MediaItem[];
   imageMedia: MediaItem[];
   videoMedia: MediaItem[];
+  mediaJobs: unknown[];
   isAdmin: boolean;
 }
 
@@ -103,10 +111,43 @@ const { loadMedia, loadSite, saveMedia, saveSite } = require("./lib/content-stor
   loadMedia: () => Promise<MediaItem[]>;
   saveMedia: (data: MediaItem[]) => Promise<void>;
 };
+const {
+  enqueueMediaJob,
+  listMediaJobs,
+  claimPendingMediaJob,
+  markMediaJobDone,
+  markMediaJobFailed,
+  recycleStalledMediaJobs
+} = require("./lib/media-job-queue") as {
+  enqueueMediaJob: (type: "import_url" | "upload_file", payload: Record<string, unknown>) => number;
+  listMediaJobs: (limit?: number) => unknown[];
+  claimPendingMediaJob: () => {
+    id: number;
+    jobType: "import_url" | "upload_file";
+    payload: Record<string, unknown>;
+    status: string;
+  } | null;
+  markMediaJobDone: (jobId: number) => void;
+  markMediaJobFailed: (jobId: number, message: string) => void;
+  recycleStalledMediaJobs: (stalledMinutes?: number) => number;
+};
 const { ensureDirs, importRemoteMedia, processUploadedFile } = require("./lib/media-tools") as {
   ensureDirs: () => Promise<void>;
   importRemoteMedia: (url: string, title?: string) => Promise<MediaItem>;
   processUploadedFile: (file: UploadedFile, title?: string) => Promise<MediaItem>;
+};
+const {
+  getCachedPage,
+  putCachedPage,
+  isRevalidating,
+  setRevalidating,
+  invalidatePageCache
+} = require("./lib/page-cache") as {
+  getCachedPage: (key: string) => { status: "hit" | "stale"; html: string } | null;
+  putCachedPage: (key: string, html: string) => void;
+  isRevalidating: (key: string) => boolean;
+  setRevalidating: (key: string, value: boolean) => void;
+  invalidatePageCache: (prefix?: string) => void;
 };
 
 const app = express();
@@ -206,25 +247,58 @@ function defaultSectionConfig(): HomeSectionsConfig {
     order: [...HOME_SECTION_KEYS],
     services: {
       title: "Услуги и производственный контур",
-      description: "Компактная архитектура работ: от цифрового моделирования до финального контроля в едином цикле."
+      description: "Компактная архитектура работ: от цифрового моделирования до финального контроля в едином цикле.",
+      enabled: true,
+      visibleFrom: "",
+      visibleTo: ""
     },
     process: {
       title: "Процесс",
       description:
         "Пять логических этапов с прозрачными контрольными точками, чтобы клиника и врач видели статус кейса в реальном времени.",
-      steps: ["Бриф и протокол", "3D-моделирование", "Фрезеровка и печать", "Контроль точности", "Передача кейса"]
+      steps: ["Бриф и протокол", "3D-моделирование", "Фрезеровка и печать", "Контроль точности", "Передача кейса"],
+      enabled: true,
+      visibleFrom: "",
+      visibleTo: ""
     },
     materials: {
       title: "Материалы",
-      description: "Используем только предсказуемые материалы и фиксируем их на каждом проекте до передачи кейса врачу."
+      description: "Используем только предсказуемые материалы и фиксируем их на каждом проекте до передачи кейса врачу.",
+      enabled: true,
+      visibleFrom: "",
+      visibleTo: ""
+    },
+    about: {
+      title: "О лаборатории",
+      description: "Факты, процесс и стандарты White Lab.",
+      enabled: true,
+      visibleFrom: "",
+      visibleTo: ""
     },
     gallery: {
       title: "Медиатека",
-      description: "Визуальный архив лаборатории: не каталог карточек, а единая сценография реальных работ."
+      description: "Визуальный архив лаборатории: не каталог карточек, а единая сценография реальных работ.",
+      enabled: true,
+      visibleFrom: "",
+      visibleTo: ""
     },
     contacts: {
-      title: "Контакты White Lab"
+      title: "Контакты White Lab",
+      enabled: true,
+      visibleFrom: "",
+      visibleTo: ""
     }
+  };
+}
+
+function normalizeSectionVisibility<T extends { enabled?: unknown; visibleFrom?: unknown; visibleTo?: unknown }>(
+  incoming: T | undefined,
+  defaults: { enabled: boolean; visibleFrom: string; visibleTo: string }
+): { enabled: boolean; visibleFrom: string; visibleTo: string } {
+  return {
+    enabled: incoming?.enabled === undefined ? defaults.enabled : Boolean(incoming?.enabled),
+    visibleFrom: typeof incoming?.visibleFrom === "string" ? incoming.visibleFrom : defaults.visibleFrom,
+    visibleTo: typeof incoming?.visibleTo === "string" ? incoming.visibleTo : defaults.visibleTo
   };
 }
 
@@ -241,26 +315,62 @@ function normalizeSections(site: SiteData): HomeSectionsConfig {
     order: sanitizeHomeSectionOrder(incoming.order || defaults.order),
     services: {
       ...defaults.services,
-      ...(incoming.services || {})
+      ...(incoming.services || {}),
+      ...normalizeSectionVisibility(incoming.services, defaults.services)
     },
     process: {
       ...defaults.process,
       ...(incoming.process || {}),
-      steps: processSteps.length ? processSteps : defaults.process.steps
+      steps: processSteps.length ? processSteps : defaults.process.steps,
+      ...normalizeSectionVisibility(incoming.process, defaults.process)
     },
     materials: {
       ...defaults.materials,
-      ...(incoming.materials || {})
+      ...(incoming.materials || {}),
+      ...normalizeSectionVisibility(incoming.materials, defaults.materials)
+    },
+    about: {
+      ...defaults.about,
+      ...(incoming.about || {}),
+      ...normalizeSectionVisibility(incoming.about, defaults.about)
     },
     gallery: {
       ...defaults.gallery,
-      ...(incoming.gallery || {})
+      ...(incoming.gallery || {}),
+      ...normalizeSectionVisibility(incoming.gallery, defaults.gallery)
     },
     contacts: {
       ...defaults.contacts,
-      ...(incoming.contacts || {})
+      ...(incoming.contacts || {}),
+      ...normalizeSectionVisibility(incoming.contacts, defaults.contacts)
     }
   };
+}
+
+function normalizeSectionDateInput(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+  return value.trim();
+}
+
+function isSectionVisibleNow(section: { enabled?: boolean; visibleFrom?: string; visibleTo?: string }, now = Date.now()): boolean {
+  if (section?.enabled === false) {
+    return false;
+  }
+
+  const start = Date.parse(section?.visibleFrom || "");
+  const end = Date.parse(section?.visibleTo || "");
+
+  if (Number.isFinite(start) && now < start) {
+    return false;
+  }
+
+  if (Number.isFinite(end) && now > end) {
+    return false;
+  }
+
+  return true;
 }
 
 function resolveSectionOrderFromForm(body: Record<string, unknown>): HomeSectionKey[] {
@@ -278,6 +388,27 @@ function resolveSectionOrderFromForm(body: Record<string, unknown>): HomeSection
   });
 
   return sanitizeHomeSectionOrder(ranked.map((item) => item.key));
+}
+
+function resolveSectionVisibilityFromForm(
+  body: Record<string, unknown>,
+  key: HomeSectionKey,
+  fallback: { enabled: boolean; visibleFrom: string; visibleTo: string }
+): { enabled: boolean; visibleFrom: string; visibleTo: string } {
+  const rawEnabled = body[`section_${key}_enabled`];
+  let enabled = fallback.enabled;
+
+  if (Array.isArray(rawEnabled)) {
+    enabled = rawEnabled.some((item) => String(item) === "1" || String(item).toLowerCase() === "true");
+  } else if (rawEnabled !== undefined) {
+    enabled = String(rawEnabled) === "1" || String(rawEnabled).toLowerCase() === "true";
+  }
+
+  return {
+    enabled,
+    visibleFrom: normalizeSectionDateInput(body[`section_${key}_visible_from`]),
+    visibleTo: normalizeSectionDateInput(body[`section_${key}_visible_to`])
+  };
 }
 
 function requireAdmin(req: RequestLike, res: ResponseLike, next: NextLike): void {
@@ -323,6 +454,7 @@ async function buildViewModel(req: RequestLike): Promise<ViewModel> {
     media,
     imageMedia,
     videoMedia,
+    mediaJobs: [],
     isAdmin: Boolean(req.session?.isAdmin)
   };
 }
@@ -440,42 +572,124 @@ function getErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
+function buildSectionVisibilityMap(sections: HomeSectionsConfig): Record<HomeSectionKey, boolean> {
+  return {
+    services: isSectionVisibleNow(sections.services),
+    process: isSectionVisibleNow(sections.process),
+    materials: isSectionVisibleNow(sections.materials),
+    about: isSectionVisibleNow(sections.about),
+    gallery: isSectionVisibleNow(sections.gallery),
+    contacts: isSectionVisibleNow(sections.contacts)
+  };
+}
+
+async function renderTemplate(view: string, data: Record<string, unknown>): Promise<string> {
+  return new Promise((resolve, reject) => {
+    app.render(view, data, (error: unknown, html: string) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(html);
+    });
+  });
+}
+
+async function renderWithPublicCache(
+  req: RequestLike,
+  res: ResponseLike,
+  cacheKey: string,
+  renderer: () => Promise<{ view: string; data: Record<string, unknown>; statusCode?: number }>
+): Promise<void> {
+  const allowCache = !req.session?.isAdmin;
+
+  if (allowCache) {
+    const cached = getCachedPage(cacheKey);
+    if (cached?.status === "hit") {
+      res.type("text/html").send(cached.html);
+      return;
+    }
+
+    if (cached?.status === "stale") {
+      res.type("text/html").send(cached.html);
+
+      if (!isRevalidating(cacheKey)) {
+        setRevalidating(cacheKey, true);
+        renderer()
+          .then(async ({ view, data, statusCode }) => {
+            if ((statusCode || 200) === 200) {
+              const html = await renderTemplate(view, data);
+              putCachedPage(cacheKey, html);
+            }
+          })
+          .catch(() => {})
+          .finally(() => {
+            setRevalidating(cacheKey, false);
+          });
+      }
+
+      return;
+    }
+  }
+
+  const rendered = await renderer();
+  const statusCode = rendered.statusCode || 200;
+  const html = await renderTemplate(rendered.view, rendered.data);
+  if (allowCache && statusCode === 200) {
+    putCachedPage(cacheKey, html);
+  }
+
+  if (statusCode !== 200) {
+    res.status(statusCode);
+  }
+  res.type("text/html").send(html);
+}
+
 app.get("/", async (req, res, next) => {
   try {
-    const vm = await buildViewModel(req);
-    const heroVisual = vm.videoMedia[0] || vm.imageMedia[0] || null;
-    const heroPoster =
-      heroVisual?.type === "video"
-        ? vm.imageMedia.find((item) => item.localOptimized !== heroVisual.localOptimized) || vm.imageMedia[0] || null
-        : null;
-    const uniqueImages = uniqueBy(vm.imageMedia, (item) => item.localOptimized || item.id);
-    const uniqueVideos = uniqueBy(vm.videoMedia, (item) => item.localOptimized || item.id);
-    const gallery = uniqueImages
-      .filter(
-        (item) => item.localOptimized !== heroVisual?.localOptimized && item.localOptimized !== heroPoster?.localOptimized
-      )
-      .slice(0, 10);
-    const reels = uniqueVideos
-      .filter((item) => item.localOptimized !== heroVisual?.localOptimized)
-      .slice(0, 3);
-    const metaImage =
-      heroVisual?.type === "image"
-        ? heroVisual.localOptimized
-        : heroPoster?.localOptimized || vm.imageMedia[0]?.localOptimized || null;
+    await renderWithPublicCache(req, res, "page:/", async () => {
+      const vm = await buildViewModel(req);
+      const heroVisual = vm.videoMedia[0] || vm.imageMedia[0] || null;
+      const heroPoster =
+        heroVisual?.type === "video"
+          ? vm.imageMedia.find((item) => item.localOptimized !== heroVisual.localOptimized) || vm.imageMedia[0] || null
+          : null;
+      const uniqueImages = uniqueBy(vm.imageMedia, (item) => item.localOptimized || item.id);
+      const uniqueVideos = uniqueBy(vm.videoMedia, (item) => item.localOptimized || item.id);
+      const gallery = uniqueImages
+        .filter(
+          (item) => item.localOptimized !== heroVisual?.localOptimized && item.localOptimized !== heroPoster?.localOptimized
+        )
+        .slice(0, 10);
+      const reels = uniqueVideos
+        .filter((item) => item.localOptimized !== heroVisual?.localOptimized)
+        .slice(0, 3);
+      const metaImage =
+        heroVisual?.type === "image"
+          ? heroVisual.localOptimized
+          : heroPoster?.localOptimized || vm.imageMedia[0]?.localOptimized || null;
 
-    const meta = buildMeta(req, vm.site, {
-      image: metaImage
-    });
+      const meta = buildMeta(req, vm.site, {
+        image: metaImage
+      });
+      const sectionVisibility = buildSectionVisibilityMap(vm.site.sections);
+      const visibleSectionOrder = vm.site.sections.order.filter((key) => sectionVisibility[key]);
 
-    res.render("home", {
-      ...vm,
-      page: "home",
-      heroVisual,
-      heroPoster,
-      gallery,
-      reels,
-      structuredData: withAbsoluteServiceUrls(getBaseUrl(req), buildStructuredData(vm.site, meta.image || null)),
-      meta
+      return {
+        view: "home",
+        data: {
+          ...vm,
+          page: "home",
+          heroVisual,
+          heroPoster,
+          gallery,
+          reels,
+          sectionVisibility,
+          visibleSectionOrder,
+          structuredData: withAbsoluteServiceUrls(getBaseUrl(req), buildStructuredData(vm.site, meta.image || null)),
+          meta
+        }
+      };
     });
   } catch (error) {
     next(error);
@@ -484,39 +698,48 @@ app.get("/", async (req, res, next) => {
 
 app.get("/services/:slug", async (req, res, next) => {
   try {
-    const vm = await buildViewModel(req);
-    const services = vm.site?.services || [];
-    const service = services.find((item) => item.slug === req.params.slug);
+    const cacheKey = `page:service:${req.params.slug}`;
+    await renderWithPublicCache(req, res, cacheKey, async () => {
+      const vm = await buildViewModel(req);
+      const services = vm.site?.services || [];
+      const service = services.find((item) => item.slug === req.params.slug);
 
-    if (!service) {
-      res.status(404).render("service", {
-        ...vm,
-        page: "service",
-        service: null,
-        related: services.slice(0, 3),
-        meta: buildMeta(req, vm.site, {
-          title: "Услуга не найдена",
-          description: vm.site?.seo?.description,
-          noindex: true
-        })
+      if (!service) {
+        return {
+          view: "service",
+          statusCode: 404,
+          data: {
+            ...vm,
+            page: "service",
+            service: null,
+            related: services.slice(0, 3),
+            meta: buildMeta(req, vm.site, {
+              title: "Услуга не найдена",
+              description: vm.site?.seo?.description,
+              noindex: true
+            })
+          }
+        };
+      }
+
+      const meta = buildMeta(req, vm.site, {
+        ...serviceMeta(vm.site, service)
       });
-      return;
-    }
+      const serviceMedia = (service?.mediaIds || [])
+        .map((id) => vm.media.find((item) => item.id === id))
+        .filter(Boolean);
 
-    const meta = buildMeta(req, vm.site, {
-      ...serviceMeta(vm.site, service)
-    });
-    const serviceMedia = (service?.mediaIds || [])
-      .map((id) => vm.media.find((item) => item.id === id))
-      .filter(Boolean);
-
-    res.render("service", {
-      ...vm,
-      page: "service",
-      service,
-      serviceMedia,
-      related: services.filter((item) => item.slug !== service.slug).slice(0, 3),
-      meta
+      return {
+        view: "service",
+        data: {
+          ...vm,
+          page: "service",
+          service,
+          serviceMedia,
+          related: services.filter((item) => item.slug !== service.slug).slice(0, 3),
+          meta
+        }
+      };
     });
   } catch (error) {
     next(error);
@@ -571,9 +794,11 @@ app.post("/admin/logout", requireAdmin, (req, res) => {
 app.get("/admin", requireAdmin, async (req, res, next) => {
   try {
     const vm = await buildViewModel(req);
+    const mediaJobs = listMediaJobs(40);
 
     res.render("admin/dashboard", {
       ...vm,
+      mediaJobs,
       page: "admin",
       success: req.query.success || "",
       error: req.query.error || "",
@@ -665,27 +890,38 @@ app.post("/admin/content", requireAdmin, async (req, res) => {
         services: {
           ...currentSections.services,
           title: req.body.section_services_title || currentSections.services.title,
-          description: req.body.section_services_description || currentSections.services.description
+          description: req.body.section_services_description || currentSections.services.description,
+          ...resolveSectionVisibilityFromForm(req.body, "services", currentSections.services)
         },
         process: {
           ...currentSections.process,
           title: req.body.section_process_title || currentSections.process.title,
           description: req.body.section_process_description || currentSections.process.description,
-          steps: processStepsInput.length > 0 ? processStepsInput : currentSections.process.steps
+          steps: processStepsInput.length > 0 ? processStepsInput : currentSections.process.steps,
+          ...resolveSectionVisibilityFromForm(req.body, "process", currentSections.process)
         },
         materials: {
           ...currentSections.materials,
           title: req.body.section_materials_title || currentSections.materials.title,
-          description: req.body.section_materials_description || currentSections.materials.description
+          description: req.body.section_materials_description || currentSections.materials.description,
+          ...resolveSectionVisibilityFromForm(req.body, "materials", currentSections.materials)
+        },
+        about: {
+          ...currentSections.about,
+          title: req.body.section_about_title || currentSections.about.title,
+          description: req.body.section_about_description || currentSections.about.description,
+          ...resolveSectionVisibilityFromForm(req.body, "about", currentSections.about)
         },
         gallery: {
           ...currentSections.gallery,
           title: req.body.section_gallery_title || currentSections.gallery.title,
-          description: req.body.section_gallery_description || currentSections.gallery.description
+          description: req.body.section_gallery_description || currentSections.gallery.description,
+          ...resolveSectionVisibilityFromForm(req.body, "gallery", currentSections.gallery)
         },
         contacts: {
           ...currentSections.contacts,
-          title: req.body.section_contacts_title || currentSections.contacts.title
+          title: req.body.section_contacts_title || currentSections.contacts.title,
+          ...resolveSectionVisibilityFromForm(req.body, "contacts", currentSections.contacts)
         }
       },
       metrics: {
@@ -699,6 +935,7 @@ app.post("/admin/content", requireAdmin, async (req, res) => {
     };
 
     await saveSite(next);
+    invalidatePageCache("page:");
     res.redirect("/admin?success=Контент обновлён");
   } catch (error) {
     const message = encodeURIComponent(getErrorMessage(error, "Ошибка сохранения"));
@@ -713,12 +950,12 @@ app.post("/admin/media/import", requireAdmin, async (req, res) => {
       throw new Error("Укажите URL для импорта");
     }
 
-    const mediaItem = await importRemoteMedia(importUrl, importTitle);
-    const media = await loadMedia();
-    media.unshift(mediaItem);
-    await saveMedia(media);
+    const jobId = enqueueMediaJob("import_url", {
+      url: String(importUrl),
+      title: String(importTitle || "")
+    });
 
-    res.redirect("/admin?success=Медиа импортировано");
+    res.redirect(`/admin?success=${encodeURIComponent(`Импорт поставлен в очередь (задача #${jobId})`)}`);
   } catch (error) {
     const message = encodeURIComponent(getErrorMessage(error, "Ошибка импорта"));
     res.redirect(`/admin?error=${message}`);
@@ -731,15 +968,18 @@ app.post("/admin/media/upload", requireAdmin, upload.single("media_file"), async
       throw new Error("Файл не выбран");
     }
 
-    const mediaItem = await processUploadedFile(req.file, req.body.upload_title);
-    const media = await loadMedia();
-    media.unshift(mediaItem);
-    await saveMedia(media);
+    const jobId = enqueueMediaJob("upload_file", {
+      path: req.file.path,
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      title: String(req.body.upload_title || "")
+    });
 
-    await fs.unlink(req.file.path).catch(() => {});
-
-    res.redirect("/admin?success=Файл загружен");
+    res.redirect(`/admin?success=${encodeURIComponent(`Файл поставлен в очередь обработки (#${jobId})`)}`);
   } catch (error) {
+    if (req.file?.path) {
+      await fs.unlink(req.file.path).catch(() => {});
+    }
     const message = encodeURIComponent(getErrorMessage(error, "Ошибка загрузки"));
     res.redirect(`/admin?error=${message}`);
   }
@@ -791,10 +1031,39 @@ app.post("/admin/services", requireAdmin, async (req, res) => {
       ...current,
       services: nextServices
     });
+    invalidatePageCache("page:");
 
     res.redirect("/admin?success=Страницы услуг обновлены");
   } catch (error) {
     const message = encodeURIComponent(getErrorMessage(error, "Ошибка сохранения услуг"));
+    res.redirect(`/admin?error=${message}`);
+  }
+});
+
+app.post("/admin/media/update-meta", requireAdmin, async (req, res) => {
+  try {
+    const mediaId = String(req.body.media_id || "").trim();
+    if (!mediaId) {
+      throw new Error("Не выбран идентификатор медиа");
+    }
+
+    const media = await loadMedia();
+    const index = media.findIndex((item) => item.id === mediaId);
+    if (index < 0) {
+      throw new Error("Медиа не найдено");
+    }
+
+    media[index] = {
+      ...media[index],
+      title: String(req.body.media_title || "").trim(),
+      alt: String(req.body.media_alt || "").trim()
+    };
+
+    await saveMedia(media);
+    invalidatePageCache("page:");
+    res.redirect("/admin?success=Метаданные медиа обновлены");
+  } catch (error) {
+    const message = encodeURIComponent(getErrorMessage(error, "Ошибка обновления медиа"));
     res.redirect(`/admin?error=${message}`);
   }
 });
@@ -823,6 +1092,7 @@ app.post("/admin/media/delete", requireAdmin, async (req, res) => {
     }
 
     await saveMedia(next);
+    invalidatePageCache("page:");
     res.redirect("/admin?success=Медиа удалено");
   } catch (error) {
     const message = encodeURIComponent(getErrorMessage(error, "Ошибка удаления"));
@@ -864,9 +1134,100 @@ app.use((error, req, res, next) => {
   res.status(500).send("Внутренняя ошибка сервера");
 });
 
+let mediaWorkerBusy = false;
+
+async function processOneMediaJob(): Promise<void> {
+  if (mediaWorkerBusy) {
+    return;
+  }
+  mediaWorkerBusy = true;
+  let currentJob:
+    | {
+        id: number;
+        jobType: "import_url" | "upload_file";
+        payload: Record<string, unknown>;
+        status: string;
+      }
+    | null = null;
+
+  try {
+    recycleStalledMediaJobs(30);
+    currentJob = claimPendingMediaJob();
+    if (!currentJob) {
+      return;
+    }
+
+    if (currentJob.jobType === "import_url") {
+      const importUrl = String(currentJob.payload?.url || "").trim();
+      const importTitle = String(currentJob.payload?.title || "").trim();
+      if (!importUrl) {
+        throw new Error("Пустой URL для импорта");
+      }
+
+      const mediaItem = await importRemoteMedia(importUrl, importTitle);
+      const media = await loadMedia();
+      media.unshift(mediaItem);
+      await saveMedia(media);
+      invalidatePageCache("page:");
+      markMediaJobDone(currentJob.id);
+      return;
+    }
+
+    if (currentJob.jobType === "upload_file") {
+      const uploadPayload = {
+        path: String(currentJob.payload?.path || ""),
+        originalname: String(currentJob.payload?.originalname || ""),
+        mimetype: String(currentJob.payload?.mimetype || "")
+      };
+      const uploadTitle = String(currentJob.payload?.title || "").trim();
+
+      if (!uploadPayload.path || !uploadPayload.originalname || !uploadPayload.mimetype) {
+        throw new Error("Некорректные данные загрузки");
+      }
+
+      try {
+        const mediaItem = await processUploadedFile(uploadPayload, uploadTitle);
+        const media = await loadMedia();
+        media.unshift(mediaItem);
+        await saveMedia(media);
+        invalidatePageCache("page:");
+        markMediaJobDone(currentJob.id);
+      } finally {
+        await fs.unlink(uploadPayload.path).catch(() => {});
+      }
+      return;
+    }
+
+    throw new Error("Неизвестный тип медиа-задачи");
+  } catch (error) {
+    const message = getErrorMessage(error, "Ошибка обработки медиа-задачи");
+    if (currentJob) {
+      markMediaJobFailed(currentJob.id, message);
+      if (currentJob.jobType === "upload_file") {
+        const uploadPath = String(currentJob.payload?.path || "");
+        if (uploadPath) {
+          await fs.unlink(uploadPath).catch(() => {});
+        }
+      }
+    }
+  } finally {
+    mediaWorkerBusy = false;
+  }
+}
+
+function startMediaWorker(): void {
+  setInterval(() => {
+    processOneMediaJob().catch((error) => {
+      console.error("Media worker error", error);
+      mediaWorkerBusy = false;
+    });
+  }, 1200).unref();
+}
+
 (async () => {
   await ensureDirs();
   await fs.mkdir(uploadsDir, { recursive: true });
+  startMediaWorker();
 
   app.listen(port, () => {
     console.log(`White Lab running on http://localhost:${port}`);

@@ -91,6 +91,9 @@ export interface MetricsConfig {
 export interface SectionBlock {
   title?: string;
   description?: string;
+  enabled?: boolean;
+  visibleFrom?: string;
+  visibleTo?: string;
 }
 
 export interface ProcessSection extends SectionBlock {
@@ -99,6 +102,9 @@ export interface ProcessSection extends SectionBlock {
 
 export interface ContactsSection {
   title?: string;
+  enabled?: boolean;
+  visibleFrom?: string;
+  visibleTo?: string;
 }
 
 export interface SiteSections {
@@ -106,6 +112,7 @@ export interface SiteSections {
   services?: SectionBlock;
   process?: ProcessSection;
   materials?: SectionBlock;
+  about?: SectionBlock;
   gallery?: SectionBlock;
   contacts?: ContactsSection;
 }

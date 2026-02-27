@@ -348,6 +348,42 @@ body {
   background: rgba(31, 187, 167, 0.12);
 }
 
+.admin-section-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.admin-section-schedule-card {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 0.62rem;
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-section-schedule-card legend {
+  padding: 0 0.3rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9bb0c3;
+}
+
+.admin-toggle-row {
+  display: flex !important;
+  align-items: center;
+  gap: 0.46rem;
+}
+
+.admin-toggle-row input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #2dd4a8;
+}
+
 .admin-form-actions {
   grid-column: 1 / -1;
 }
@@ -472,6 +508,32 @@ body {
   cursor: pointer;
 }
 
+.admin-media-edit {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.admin-media-edit label {
+  display: grid;
+  gap: 0.22rem;
+  font-size: 0.76rem;
+  color: #d3deea;
+}
+
+.admin-media-edit input {
+  background: rgba(8, 12, 17, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  padding: 0.45rem 0.52rem;
+}
+
+.admin-media-edit button {
+  border-color: rgba(31, 187, 167, 0.56);
+  background: rgba(31, 187, 167, 0.14);
+}
+
 .admin-login-wrap {
   min-height: 100vh;
   display: grid;
@@ -582,6 +644,78 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
+.admin-service-media-picker {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.56rem;
+  align-items: end;
+}
+
+.admin-service-media-picker select {
+  width: 100%;
+  background: rgba(8, 12, 17, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  padding: 0.56rem 0.62rem;
+}
+
+.admin-service-media-picker button {
+  min-width: 9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 187, 167, 0.55);
+  background: rgba(31, 187, 167, 0.14);
+  color: var(--text);
+  padding: 0.58rem 0.66rem;
+  cursor: pointer;
+}
+
+.admin-service-media-preview {
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: rgba(7, 12, 18, 0.66);
+  padding: 0.58rem;
+}
+
+.admin-service-media-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.54rem;
+}
+
+.admin-service-media-preview-card {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 0.42rem;
+  display: grid;
+  gap: 0.24rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-service-media-preview-card img,
+.admin-service-media-preview-card video {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: #06090e;
+}
+
+.admin-service-media-preview-card strong {
+  color: #8fd9ff;
+  font-size: 0.72rem;
+}
+
+.admin-service-media-preview-card span {
+  color: #b5c4d2;
+  font-size: 0.72rem;
+}
+
+.admin-service-media-preview-card.is-missing {
+  border-color: rgba(255, 107, 107, 0.45);
+  background: rgba(255, 107, 107, 0.09);
+}
+
 .admin-media-id-list {
   margin-top: 0.5rem;
   max-height: 14rem;
@@ -598,6 +732,70 @@ body {
   color: #8fd9ff;
 }
 
+.admin-job-table-wrap {
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.admin-job-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.admin-job-table th,
+.admin-job-table td {
+  text-align: left;
+  padding: 0.52rem 0.62rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-size: 0.8rem;
+}
+
+.admin-job-table thead th {
+  color: #9fb3c6;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-job-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.4rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.46rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+}
+
+.admin-job-status.status-pending {
+  border-color: rgba(139, 180, 255, 0.45);
+  color: #b8d5ff;
+  background: rgba(88, 146, 255, 0.14);
+}
+
+.admin-job-status.status-processing {
+  border-color: rgba(255, 190, 90, 0.55);
+  color: #ffd7a2;
+  background: rgba(255, 190, 90, 0.16);
+}
+
+.admin-job-status.status-done {
+  border-color: rgba(45, 212, 168, 0.5);
+  color: #c9f9ed;
+  background: rgba(45, 212, 168, 0.14);
+}
+
+.admin-job-status.status-failed {
+  border-color: rgba(255, 107, 107, 0.55);
+  color: #ffd6d6;
+  background: rgba(255, 107, 107, 0.16);
+}
+
 @media (max-width: 1120px) {
   .admin-kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -612,6 +810,15 @@ body {
   .admin-form-grid,
   .admin-media-actions,
   .admin-service-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-section-schedule-grid,
+  .admin-service-media-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-service-media-picker {
     grid-template-columns: 1fr;
   }
 

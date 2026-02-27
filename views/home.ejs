@@ -9,7 +9,11 @@
       const faqItems = (site?.faq || []).slice(0, 5);
       const mosaicPattern = ["hero", "wide", "tall", "mini", "wide", "mini", "tall", "wide", "mini", "hero"];
       const tileShapePattern = ["shape-a", "shape-b", "shape-c", "shape-d", "shape-e", "shape-f"];
-      const sectionOrder = site?.sections?.order || ["services", "process", "materials", "about", "gallery", "contacts"];
+      const sectionOrder = (Array.isArray(visibleSectionOrder) && visibleSectionOrder.length
+        ? visibleSectionOrder
+        : (site?.sections?.order || ["services", "process", "materials", "about", "gallery", "contacts"])).filter(
+          (key) => !sectionVisibility || sectionVisibility[key] !== false
+        );
       const sectionOrderMap = sectionOrder.reduce((acc, key, index) => {
         acc[key] = index + 1;
         return acc;
@@ -79,6 +83,7 @@
     <main class="landing">
       <%- include('components/hero') %>
 
+      <% if (!sectionVisibility || sectionVisibility.services !== false) { %>
       <section class="section studio studio-block" id="services" style="--section-order: <%= sectionOrderMap.services || 1 %>">
         <div class="studio-backdrop" aria-hidden="true">
           <span class="studio-orb studio-orb-a" data-parallax-speed="-0.06"></span>
@@ -99,7 +104,9 @@
           </article>
         </div>
       </section>
+      <% } %>
 
+      <% if (!sectionVisibility || sectionVisibility.process !== false) { %>
       <section class="section studio studio-block section-process" id="process" style="--section-order: <%= sectionOrderMap.process || 2 %>">
         <div class="studio-backdrop" aria-hidden="true">
           <span class="studio-orb studio-orb-a" data-parallax-speed="-0.05"></span>
@@ -120,7 +127,9 @@
           </article>
         </div>
       </section>
+      <% } %>
 
+      <% if (!sectionVisibility || sectionVisibility.materials !== false) { %>
       <section class="section studio studio-block section-materials" id="materials" style="--section-order: <%= sectionOrderMap.materials || 3 %>">
         <div class="studio-backdrop" aria-hidden="true">
           <span class="studio-orb studio-orb-a" data-parallax-speed="-0.04"></span>
@@ -144,7 +153,9 @@
           </article>
         </div>
       </section>
+      <% } %>
 
+      <% if (!sectionVisibility || sectionVisibility.about !== false) { %>
       <section class="section studio studio-block section-about" id="about" style="--section-order: <%= sectionOrderMap.about || 4 %>">
         <div class="studio-backdrop" aria-hidden="true">
           <span class="studio-orb studio-orb-a" data-parallax-speed="-0.03"></span>
@@ -163,7 +174,9 @@
           </article>
         </div>
       </section>
+      <% } %>
 
+      <% if (!sectionVisibility || sectionVisibility.gallery !== false) { %>
       <section class="section media-cinema" id="gallery" style="--section-order: <%= sectionOrderMap.gallery || 5 %>">
         <div class="container">
           <div class="media-cinema-backdrop" aria-hidden="true">
@@ -204,7 +217,9 @@
           <% } %>
         </div>
       </section>
+      <% } %>
 
+      <% if (!sectionVisibility || sectionVisibility.contacts !== false) { %>
       <section class="section finale" id="contacts" style="--section-order: <%= sectionOrderMap.contacts || 6 %>">
         <div class="finale-backdrop" aria-hidden="true">
           <span class="finale-orb finale-orb-a" data-parallax-speed="-0.05"></span>
@@ -244,6 +259,7 @@
           </article>
         </div>
       </section>
+      <% } %>
     </main>
 
     <%- include('partials/footer') %>
