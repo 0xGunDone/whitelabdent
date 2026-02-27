@@ -41,10 +41,6 @@ function toOutputPath(tsFile) {
     return path.join(root, "public", "scripts", localRel.replace(/\.ts$/, ".js"));
   }
 
-  if (rel === "script.ts") {
-    return path.join(root, "script.js");
-  }
-
   if (rel.startsWith(`tests${path.sep}`)) {
     return path.join(root, path.basename(rel).replace(/\.ts$/, ".js"));
   }
