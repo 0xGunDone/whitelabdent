@@ -101,6 +101,8 @@ interface ViewModel {
   media: MediaItem[];
   imageMedia: MediaItem[];
   videoMedia: MediaItem[];
+  sectionVisibility: Record<HomeSectionKey, boolean>;
+  visibleSectionOrder: HomeSectionKey[];
   mediaJobs: unknown[];
   isAdmin: boolean;
 }
@@ -448,12 +450,16 @@ async function buildViewModel(req: RequestLike): Promise<ViewModel> {
   }));
   const imageMedia = media.filter((item) => item.type === "image");
   const videoMedia = media.filter((item) => item.type === "video");
+  const sectionVisibility = buildSectionVisibilityMap(site.sections as HomeSectionsConfig);
+  const visibleSectionOrder = (site.sections?.order || []).filter((key) => sectionVisibility[key as HomeSectionKey]);
 
   return {
     site,
     media,
     imageMedia,
     videoMedia,
+    sectionVisibility,
+    visibleSectionOrder,
     mediaJobs: [],
     isAdmin: Boolean(req.session?.isAdmin)
   };
